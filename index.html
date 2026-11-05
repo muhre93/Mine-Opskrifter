@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mine opskrifter</title>
+<meta name="theme-color" content="#b5532f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mine opskrifter">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%B2%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" id="touchicon">
+<style>
+:root{
+  --bg:#faf6f1; --card:#ffffff; --ink:#2b2420; --muted:#7a6e66; --line:#e8dfd6;
+  --accent:#b5532f; --accent-ink:#ffffff; --chip:#f3e8dd; --danger:#b3261e;
+  --shadow:0 1px 2px rgba(60,40,20,.06),0 4px 14px rgba(60,40,20,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#1a1614; --card:#25201d; --ink:#f2eae3; --muted:#a99b91; --line:#3a312c;
+    --accent:#e07a4f; --accent-ink:#1a1614; --chip:#352a22; --danger:#ff8a80;
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+button{font:inherit;color:inherit}
+a{color:var(--accent)}
+header{position:sticky;top:0;z-index:10;background:var(--bg);
+  padding:calc(10px + env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:8px;max-width:720px;margin:0 auto}
+.bar h1{font-size:22px;margin:0;flex:1;letter-spacing:-.01em}
+.icon{background:none;border:0;font-size:28px;line-height:1;padding:2px 10px 4px 0;cursor:pointer;color:var(--accent)}
+.searchwrap{max-width:720px;margin:10px auto 0}
+#search{width:100%;font-size:16px;padding:11px 14px;border-radius:12px;border:1px solid var(--line);
+  background:var(--card);color:var(--ink);outline:none}
+#search:focus{border-color:var(--accent)}
+main{max-width:720px;margin:0 auto;padding:14px 16px}
+.count{color:var(--muted);font-size:14px;margin:2px 2px 10px}
+.list{display:grid;gap:10px}
+.card{display:flex;gap:12px;align-items:center;background:var(--card);border-radius:14px;padding:10px;
+  text-decoration:none;color:inherit;box-shadow:var(--shadow);border:1px solid var(--line)}
+.thumb{width:72px;height:72px;border-radius:10px;flex:none;background:var(--chip);display:grid;place-items:center;
+  font-size:28px;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.ct{min-width:0}
+.ct .t{font-weight:600;font-size:17px;line-height:1.25}
+.ct .m{color:var(--muted);font-size:13px;margin-top:3px}
+.ct .hint{font-size:13px;margin-top:3px;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{text-align:center;color:var(--muted);padding:48px 16px}
+.empty .big{font-size:48px}
+.foot{text-align:center;color:var(--muted);font-size:13px;margin-top:28px}
+.link{background:none;border:0;color:var(--accent);cursor:pointer;padding:6px;text-decoration:underline}
+#fab{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom));width:60px;height:60px;border-radius:50%;
+  border:0;background:var(--accent);color:var(--accent-ink);font-size:34px;line-height:1;box-shadow:0 6px 18px rgba(0,0,0,.25);cursor:pointer;z-index:20}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{background:var(--chip);border:0;border-radius:999px;padding:4px 12px;font-size:14px;cursor:pointer}
+/* detail */
+.hero{margin:-14px -16px 14px;max-height:52vh;overflow:hidden;background:var(--chip)}
+.hero img{width:100%;display:block;object-fit:cover;max-height:52vh;cursor:zoom-in}
+.detail h2{font-size:26px;line-height:1.2;margin:4px 0 4px;letter-spacing:-.01em}
+.meta{color:var(--muted);font-size:15px}
+section{margin-top:22px}
+section h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.ings{list-style:none;margin:0;padding:0;background:var(--card);border-radius:14px;border:1px solid var(--line)}
+.ings li{padding:11px 14px 11px 42px;border-top:1px solid var(--line);position:relative;cursor:pointer;user-select:none}
+.ings li:first-child{border-top:0}
+.ings li::before{content:"";position:absolute;left:14px;top:14px;width:16px;height:16px;border-radius:5px;border:2px solid var(--line)}
+.ings li.done{color:var(--muted);text-decoration:line-through}
+.ings li.done::before{background:var(--accent);border-color:var(--accent)}
+.ings li.sub{font-weight:600;padding-left:14px;cursor:default;background:var(--chip)}
+.ings li.sub::before{display:none}
+.steps{margin:0;padding-left:22px}
+.steps li{margin:0 0 12px;padding-left:4px}
+.notes{white-space:pre-wrap;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.origs{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.og{border:1px solid var(--line);border-radius:10px;padding:0;overflow:hidden;aspect-ratio:3/4;background:var(--chip);cursor:zoom-in}
+.og img{width:100%;height:100%;object-fit:cover;display:block}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:11px 16px;cursor:pointer;font-weight:500}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.danger{color:var(--danger)}
+.btn.on{background:var(--chip);border-color:var(--accent)}
+.btn:disabled{opacity:.6}
+/* form */
+.form label{display:block;font-size:14px;font-weight:600;margin:16px 0 6px}
+.form .help{font-weight:400;color:var(--muted)}
+.form input[type=text],.form input[type=email],.form input[type=password],.form textarea{
+  width:100%;font:inherit;font-size:16px;padding:11px 12px;border-radius:12px;border:1px solid var(--line);
+  background:var(--card);color:var(--ink);outline:none}
+.form textarea{min-height:140px;resize:vertical}
+.form input:focus,.form textarea:focus{border-color:var(--accent)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.two label{margin-top:16px}
+.imgbox{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:10px}
+.imgrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.imgrow .btn{flex:1;min-width:130px;padding:10px}
+.ph{position:relative;border-radius:10px;overflow:hidden;background:var(--chip)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .rm{position:absolute;top:6px;right:6px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:16px;cursor:pointer}
+.dishph{aspect-ratio:4/3}
+.origgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
+.origgrid .ph{aspect-ratio:3/4}
+.savebar{position:sticky;bottom:0;display:flex;gap:8px;padding:12px 0 calc(12px + env(safe-area-inset-bottom));background:var(--bg);margin-top:20px}
+.savebar .btn{flex:1}
+/* login */
+.login{max-width:380px;margin:30px auto;text-align:center}
+.login .logo{font-size:56px}
+.login h2{margin:4px 0}
+.login form{display:grid;gap:10px;margin-top:18px}
+.login input{width:100%;font-size:16px;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.muted{color:var(--muted)}
+.setup{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.setup code{background:var(--chip);padding:1px 5px;border-radius:5px}
+/* overlays */
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:50;overflow:auto;display:flex;align-items:center;justify-content:center}
+#lightbox[hidden]{display:none}
+#lightbox img{max-width:100%;max-height:100%;}
+#lightbox .close{position:fixed;top:calc(12px + env(safe-area-inset-top));right:14px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.2);color:#fff;font-size:22px}
+#toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);
+  padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:60;max-width:90vw;text-align:center}
+#toast.show{opacity:1}
+#busy{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:55;display:grid;place-items:center;color:#fff;font-weight:600}
+#busy[hidden]{display:none}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <button id="back" class="icon" aria-label="Tilbage" hidden>‹</button>
+    <h1 id="htitle">Mine opskrifter</h1>
+  </div>
+  <div class="searchwrap" id="searchwrap" hidden>
+    <input id="search" type="search" placeholder="Søg i titel, ingredienser, tags…" autocomplete="off" enterkeyhint="search">
+  </div>
+</header>
+<main id="app"><p class="muted">Indlæser…</p></main>
+<button id="fab" aria-label="Ny opskrift" hidden>+</button>
+<input type="file" id="file" accept="image/*" hidden>
+<div id="lightbox" hidden><img alt=""><button class="close" aria-label="Luk">✕</button></div>
+<div id="busy" hidden>Gemmer…</div>
+<div id="toast"></div>
+
+<script type="module">
+/* ============================================================
+   1) INDSÆT DIN FIREBASE-KONFIGURATION HER
+   Firebase Console → Projektindstillinger → Dine apps → Web-app
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "INDSÆT",
+  authDomain: "INDSÆT.firebaseapp.com",
+  projectId: "INDSÆT",
+  storageBucket: "INDSÆT.appspot.com",
+  messagingSenderId: "INDSÆT",
+  appId: "INDSÆT"
+};
+/* ============================================================ */
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, doc,
+  onSnapshot, setDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const searchEl = $('#search');
+const configured = !String(firebaseConfig.apiKey).startsWith('INDSÆT');
+
+let auth, db, user = null, authReady = false, loaded = false, unsub = null;
+let recipes = [];
+let editBuiltFor = null;
+let ed = null;              // edit state
+let pickTarget = null;
+let listScroll = 0, lastRoute = null;
+let wakeLock = null;
+const imgCache = new Map();
+const checked = new Map();
+
+/* ---------- helpers ---------- */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => String(s || '').toLocaleLowerCase('da');
+const lines = s => String(s || '').split('\n').map(l => l.trim()).filter(Boolean);
+const route = () => location.hash || '#/';
+const find = id => recipes.find(r => r.id === id);
+const recCol = () => collection(db, 'users', user.uid, 'recipes');
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2600); }
+function busy(on, txt='Gemmer…'){ const b = $('#busy'); b.textContent = txt; b.hidden = !on; }
+// Offline: Firestore køer skrivningen lokalt – vent kun på serveren når vi er online
+const w = p => navigator.onLine ? p : (p.catch(e => toast('Fejl: ' + e.message)), Promise.resolve());
+
+/* ---------- billeder ---------- */
+function loadImg(src){
+  return new Promise((res, rej) => {
+    const isBlob = src instanceof Blob;
+    const url = isBlob ? URL.createObjectURL(src) : src;
+    const img = new Image();
+    img.onload = () => { if (isBlob) URL.revokeObjectURL(url); res(img); };
+    img.onerror = () => { if (isBlob) URL.revokeObjectURL(url); rej(new Error('Kunne ikke læse billedet')); };
+    img.src = url;
+  });
+}
+function draw(img, max, q){
+  const s = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+  const c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(img.naturalWidth * s));
+  c.height = Math.max(1, Math.round(img.naturalHeight * s));
+  const x = c.getContext('2d');
+  x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+  x.drawImage(img, 0, 0, c.width, c.height);
+  return c.toDataURL('image/jpeg', q);
+}
+// Komprimerer så billedet passer i ét Firestore-dokument (< 1 MB)
+async function compress(src, max, q = .85, limit = 900000){
+  const img = await loadImg(src);
+  let m = max, out = draw(img, m, q);
+  while (out.length > limit && (q > .5 || m > 700)) {
+    if (q > .5) q -= .1; else m = Math.round(m * .8);
+    out = draw(img, m, q);
+  }
+  return out;
+}
+async function loadImage(rid, iid){
+  if (!iid) return null;
+  if (imgCache.has(iid)) return imgCache.get(iid);
+  try {
+    const s = await getDoc(doc(db, 'users', user.uid, 'recipes', rid, 'images', iid));
+    const d = s.data()?.data || null;
+    if (d) imgCache.set(iid, d);
+    return d;
+  } catch (e) { return null; }
+}
+function openLightbox(src){ if (!src) return; const lb = $('#lightbox'); lb.querySelector('img').src = src; lb.hidden = false; }
+$('#lightbox').addEventListener('click', e => { if (e.target.tagName !== 'IMG') $('#lightbox').hidden = true; });
+
+/* ---------- hold skærmen tændt ---------- */
+async function toggleWake(btn){
+  try {
+    if (wakeLock) { await wakeLock.release(); wakeLock = null; }
+    else if ('wakeLock' in navigator) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; syncWakeBtn(); }); }
+    else toast('Din browser understøtter ikke dette');
+  } catch (e) { toast('Kunne ikke holde skærmen tændt'); }
+  syncWakeBtn();
+}
+function syncWakeBtn(){ const b = $('#wake'); if (b) { b.classList.toggle('on', !!wakeLock); b.textContent = wakeLock ? '☀️ Skærmen holdes tændt' : '☀️ Hold skærmen tændt'; } }
+function stopWake(){ if (wakeLock) { wakeLock.release().catch(()=>{}); wakeLock = null; } }
+
+/* ---------- chrome ---------- */
+function chrome(view){
+  $('#back').hidden = view === 'list' || view === 'login' || view === 'setup';
+  $('#searchwrap').hidden = view !== 'list';
+  $('#fab').hidden = view !== 'list';
+}
+$('#back').onclick = () => {
+  const h = route(); let m;
+  if ((m = h.match(/^#\/edit\/(.+)$/))) location.hash = '#/r/' + m[1];
+  else location.hash = '#/';
+};
+$('#fab').onclick = () => { location.hash = '#/new'; };
+searchEl.addEventListener('input', () => { if (route() === '#/' ) renderList(); });
+
+/* ---------- router ---------- */
+function render(){
+  const h = route();
+  if (!configured) return renderSetup();
+  if (!authReady) { chrome('login'); app.innerHTML = '<p class="muted">Indlæser…</p>'; return; }
+  if (!user) { editBuiltFor = null; chrome('login'); return renderLogin(); }
+  let m;
+  if (h === '#/new') { chrome('edit'); if (editBuiltFor !== h) renderEdit(null); return; }
+  if ((m = h.match(/^#\/edit\/(.+)$/))) {
+    chrome('edit');
+    const r = find(m[1]);
+    if (!r) { app.innerHTML = loaded ? '<p class="muted">Opskriften findes ikke.</p>' : '<p class="muted">Indlæser…</p>'; return; }
+    if (editBuiltFor !== h) renderEdit(r);
+    return;
+  }
+  editBuiltFor = null;
+  if ((m = h.match(/^#\/r\/(.+)$/))) {
+    chrome('detail');
+    const r = find(m[1]);
+    if (!r) { app.innerHTML = loaded ? '<p class="muted">Opskriften findes ikke.</p>' : '<p class="muted">Indlæser…</p>'; return; }
+    return renderDetail(r);
+  }
+  chrome('list');
+  renderList();
+}
+window.addEventListener('hashchange', () => {
+  if (lastRoute === '#/') listScroll = window.scrollY;
+  stopWake();
+  render();
+  if (route() === '#/') requestAnimationFrame(() => window.scrollTo(0, listScroll));
+  else window.scrollTo(0, 0);
+  lastRoute = route();
+});
+
+/* ---------- setup ---------- */
+function renderSetup(){
+  chrome('setup');
+  app.innerHTML = `<div class="setup"><h2>Næsten klar 👋</h2>
+  <p>Åbn <code>index.html</code> og indsæt din <code>firebaseConfig</code> øverst i scriptet.
+  Du finder den i Firebase Console → Projektindstillinger → Dine apps → Web-app.</p></div>`;
+}
+
+/* ---------- login ---------- */
+function renderLogin(){
+  let signup = false;
+  app.innerHTML = `<div class="login">
+    <div class="logo">🍲</div><h2>Mine opskrifter</h2>
+    <p class="muted" id="lmode">Log ind for at se dine opskrifter</p>
+    <form id="lf">
+      <input type="email" id="le" placeholder="E-mail" autocomplete="email" required>
+      <input type="password" id="lp" placeholder="Adgangskode (mindst 6 tegn)" autocomplete="current-password" required minlength="6">
+      <button class="btn primary" id="lbtn">Log ind</button>
+    </form>
+    <p><button class="link" id="ltoggle">Har du ikke en konto? Opret en</button><br>
+    <button class="link" id="lreset">Glemt adgangskode?</button></p></div>`;
+  const setMode = () => {
+    $('#lbtn').textContent = signup ? 'Opret konto' : 'Log ind';
+    $('#lmode').textContent = signup ? 'Opret din konto – kun du kan se dine opskrifter' : 'Log ind for at se dine opskrifter';
+    $('#ltoggle').textContent = signup ? 'Har du en konto? Log ind' : 'Har du ikke en konto? Opret en';
+    $('#lp').autocomplete = signup ? 'new-password' : 'current-password';
+  };
+  $('#ltoggle').onclick = () => { signup = !signup; setMode(); };
+  $('#lreset').onclick = async () => {
+    const e = $('#le').value.trim();
+    if (!e) return toast('Skriv din e-mail først');
+    try { await sendPasswordResetEmail(auth, e); toast('Mail sendt – tjek din indbakke'); }
+    catch (err) { toast(authErr(err)); }
+  };
+  $('#lf').onsubmit = async ev => {
+    ev.preventDefault();
+    const e = $('#le').value.trim(), p = $('#lp').value;
+    $('#lbtn').disabled = true;
+    try { signup ? await createUserWithEmailAndPassword(auth, e, p) : await signInWithEmailAndPassword(auth, e, p); }
+    catch (err) { toast(authErr(err)); }
+    finally { const b = $('#lbtn'); if (b) b.disabled = false; }
+  };
+}
+function authErr(e){
+  const c = e.code || '';
+  if (c.includes('invalid-credential') || c.includes('wrong-password') || c.includes('user-not-found')) return 'Forkert e-mail eller adgangskode';
+  if (c.includes('email-already-in-use')) return 'Der findes allerede en konto med den e-mail';
+  if (c.includes('weak-password')) return 'Adgangskoden skal være mindst 6 tegn';
+  if (c.includes('invalid-email')) return 'Ugyldig e-mail';
+  if (c.includes('network')) return 'Ingen forbindelse';
+  if (c.includes('unauthorized-domain')) return 'Domænet er ikke godkendt i Firebase (Authentication → Settings → Authorized domains)';
+  if (c.includes('operation-not-allowed')) return 'Slå E-mail/adgangskode til i Firebase Authentication';
+  return e.message || 'Noget gik galt';
+}
+
+/* ---------- liste + søgning ---------- */
+function renderList(){
+  const terms = norm(searchEl.value.trim()).split(/\s+/).filter(Boolean);
+  const res = [];
+  for (const r of recipes) {
+    if (!terms.length) { res.push({ r }); continue; }
+    const f = {
+      title: norm(r.title), tags: norm((r.tags || []).join(' ')), ing: norm(r.ingredients),
+      steps: norm(r.steps), notes: norm(r.notes), src: norm(r.source), extra: norm([r.servings, r.time].join(' '))
+    };
+    const all = Object.values(f).join('\n');
+    if (!terms.every(t => all.includes(t))) continue;
+    let score = 0;
+    for (const t of terms) { if (f.title.includes(t)) score += 10; if (f.tags.includes(t)) score += 5; if (f.ing.includes(t)) score += 3; }
+    let hint = '';
+    if (!terms.every(t => f.title.includes(t))) {
+      const il = lines(r.ingredients).filter(l => terms.some(t => norm(l).includes(t)));
+      if (il.length) hint = il.slice(0, 3).join(' · ');
+      else if (terms.some(t => f.steps.includes(t))) hint = 'i fremgangsmåden';
+      else if (terms.some(t => f.notes.includes(t))) hint = 'i noterne';
+    }
+    res.push({ r, score, hint });
+  }
+  if (terms.length) res.sort((a, b) => b.score - a.score);
+
+  if (!recipes.length) {
+    app.innerHTML = loaded
+      ? `<div class="empty"><div class="big">🍲</div><p>Ingen opskrifter endnu.<br>Tryk på <b>+</b> for at tilføje din første.</p></div>${foot()}`
+      : '<p class="muted">Indlæser…</p>';
+  } else {
+    app.innerHTML = `<div class="count">${terms.length ? `${res.length} af ${recipes.length} opskrifter` : `${recipes.length} opskrifter`}</div>
+      ${res.length ? '' : '<div class="empty"><p>Ingen opskrifter matcher din søgning.</p></div>'}
+      <div class="list">${res.map(({ r, hint }) => `
+        <a class="card" href="#/r/${r.id}">
+          <div class="thumb">${r.thumb ? `<img src="${r.thumb}" alt="" loading="lazy">` : '🍽️'}</div>
+          <div class="ct">
+            <div class="t">${esc(r.title)}</div>
+            <div class="m">${esc([r.time, (r.tags || []).join(', ')].filter(Boolean).join(' · ') || ' ')}</div>
+            ${hint ? `<div class="hint">🔎 ${esc(hint)}</div>` : ''}
+          </div>
+        </a>`).join('')}</div>${foot()}`;
+  }
+  const lo = $('#logout'); if (lo) lo.onclick = () => { if (confirm('Log ud?')) signOut(auth); };
+}
+const foot = () => `<div class="foot">Logget ind som ${esc(user?.email)} · <button class="link" id="logout">Log ud</button></div>`;
+
+/* ---------- visning af opskrift ---------- */
+function renderDetail(r){
+  const ings = lines(r.ingredients), steps = lines(r.steps), origs = r.originalIds || [];
+  const chk = checked.get(r.id) || new Set();
+  const src = String(r.source || '').trim();
+  const srcHtml = /^https?:\/\//i.test(src) ? `<a href="${esc(src)}" target="_blank" rel="noopener">${esc(src)}</a>` : esc(src);
+  app.innerHTML = `<article class="detail">
+    ${r.dishId ? `<div class="hero"><img id="hero" src="${r.thumb || ''}" alt=""></div>` : ''}
+    <h2>${esc(r.title)}</h2>
+    <div class="meta">${[r.servings && '🍽 ' + esc(r.servings), r.time && '⏱ ' + esc(r.time)].filter(Boolean).join(' &nbsp;·&nbsp; ')}</div>
+    ${(r.tags || []).length ? `<div class="chips">${r.tags.map(t => `<button class="chip" data-tag="${esc(t)}">${esc(t)}</button>`).join('')}</div>` : ''}
+    ${ings.length ? `<section><h3>Ingredienser</h3><ul class="ings">${ings.map((l, i) =>
+        /:$/.test(l) ? `<li class="sub">${esc(l)}</li>` : `<li data-i="${i}" class="${chk.has(i) ? 'done' : ''}">${esc(l)}</li>`).join('')}</ul></section>` : ''}
+    ${steps.length ? `<section><h3>Fremgangsmåde</h3><ol class="steps">${steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol></section>` : ''}
+    ${r.notes ? `<section><h3>Noter</h3><div class="notes">${esc(r.notes)}</div></section>` : ''}
+    ${origs.length ? `<section><h3>Original opskrift</h3><div class="origs">${origs.map(id =>
+        `<button class="og" data-id="${id}"><img data-img="${id}" alt="Original opskrift"></button>`).join('')}</div></section>` : ''}
+    ${src ? `<section><h3>Kilde</h3><div>${srcHtml}</div></section>` : ''}
+    <div class="actions">
+      <button class="btn" id="wake"></button>
+      <button class="btn primary" id="edit">✏️ Rediger</button>
+      <button class="btn danger" id="del">🗑 Slet</button>
+    </div>
+  </article>`;
+  syncWakeBtn();
+  $('#wake').onclick = e => toggleWake(e.currentTarget);
+  $('#edit').onclick = () => { location.hash = '#/edit/' + r.id; };
+  $('#del').onclick = () => deleteRecipe(r);
+  app.querySelectorAll('.chip[data-tag]').forEach(b => b.onclick = () => { searchEl.value = b.dataset.tag; listScroll = 0; location.hash = '#/'; });
+  app.querySelectorAll('.ings li[data-i]').forEach(li => li.onclick = () => {
+    const i = +li.dataset.i, s = checked.get(r.id) || new Set();
+    s.has(i) ? s.delete(i) : s.add(i); checked.set(r.id, s); li.classList.toggle('done');
+  });
+  if (r.dishId) {
+    const hero = $('#hero');
+    hero.onclick = () => openLightbox(imgCache.get(r.dishId) || hero.src);
+    loadImage(r.id, r.dishId).then(d => { const el = $('#hero'); if (el && d) el.src = d; });
+  }
+  origs.forEach(id => loadImage(r.id, id).then(d => { const el = app.querySelector(`img[data-img="${id}"]`); if (el && d) el.src = d; }));
+  app.querySelectorAll('.og').forEach(b => b.onclick = async () => openLightbox(await loadImage(r.id, b.dataset.id)));
+}
+
+async function deleteRecipe(r){
+  if (!confirm(`Slet "${r.title}"? Det kan ikke fortrydes.`)) return;
+  busy(true, 'Sletter…');
+  try {
+    const ref = doc(recCol(), r.id);
+    const ids = [r.dishId, ...(r.originalIds || [])].filter(Boolean);
+    await w(Promise.all(ids.map(id => deleteDoc(doc(ref, 'images', id)))));
+    await w(deleteDoc(ref));
+    location.replace('#/');
+    toast('Opskriften er slettet');
+  } catch (e) { toast('Fejl: ' + e.message); }
+  busy(false);
+}
+
+/* ---------- tilføj / rediger ---------- */
+function renderEdit(r){
+  editBuiltFor = route();
+  ed = {
+    r,
+    dish: r?.dishId ? { id: r.dishId, existing: true } : null,
+    originals: (r?.originalIds || []).map(id => ({ id, existing: true })),
+    removed: []
+  };
+  app.innerHTML = `<form id="f" class="form" autocomplete="off">
+    <h2 style="margin:0">${r ? 'Rediger opskrift' : 'Ny opskrift'}</h2>
+    <label for="ft">Titel</label>
+    <input type="text" id="ft" required placeholder="Fx Mormors frikadeller" enterkeyhint="next">
+
+    <label>Billede af retten <span class="help">(valgfrit)</span></label>
+    <div class="imgbox"><div id="dishbox"></div>
+      <div class="imgrow">
+        <button type="button" class="btn" data-pick="dish" data-cam="1">📷 Tag billede</button>
+        <button type="button" class="btn" data-pick="dish">🖼️ Vælg fra telefon</button>
+      </div></div>
+
+    <label for="fi">Ingredienser <span class="help">– én pr. linje. Skriv "Dej:" for en overskrift</span></label>
+    <textarea id="fi" placeholder="500 g hakket svinekød&#10;1 løg&#10;2 æg"></textarea>
+
+    <label for="fs">Fremgangsmåde <span class="help">– ét trin pr. linje</span></label>
+    <textarea id="fs" placeholder="Bland kød og løg…&#10;Steg på panden…"></textarea>
+
+    <div class="two">
+      <div><label for="fp">Portioner</label><input type="text" id="fp" placeholder="4 pers."></div>
+      <div><label for="fz">Tid</label><input type="text" id="fz" placeholder="45 min"></div>
+    </div>
+
+    <label for="fg">Tags <span class="help">– adskilt med komma</span></label>
+    <input type="text" id="fg" placeholder="aftensmad, dansk, børnevenlig">
+
+    <label for="fq">Kilde / link</label>
+    <input type="text" id="fq" placeholder="Bog, side eller https://…">
+
+    <label for="fn">Noter</label>
+    <textarea id="fn" style="min-height:80px" placeholder="Fx brug mindre salt næste gang"></textarea>
+
+    <label>Original opskrift <span class="help">– foto af bogen, kortet eller sedlen</span></label>
+    <div class="imgbox"><div id="origbox" class="origgrid"></div>
+      <div class="imgrow">
+        <button type="button" class="btn" data-pick="orig" data-cam="1">📷 Fotografér</button>
+        <button type="button" class="btn" data-pick="orig">🖼️ Vælg fra telefon</button>
+      </div></div>
+
+    <div class="savebar">
+      <button type="button" class="btn" id="cancel">Annuller</button>
+      <button type="submit" class="btn primary">Gem</button>
+    </div>
+  </form>`;
+  if (r) {
+    $('#ft').value = r.title || ''; $('#fi').value = r.ingredients || ''; $('#fs').value = r.steps || '';
+    $('#fp').value = r.servings || ''; $('#fz').value = r.time || ''; $('#fg').value = (r.tags || []).join(', ');
+    $('#fq').value = r.source || ''; $('#fn').value = r.notes || '';
+  }
+  app.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => pick(b.dataset.pick, !!b.dataset.cam));
+  $('#cancel').onclick = () => { editBuiltFor = null; location.hash = r ? '#/r/' + r.id : '#/'; };
+  $('#f').onsubmit = e => { e.preventDefault(); save(); };
+  drawEditImgs();
+  if (!r) setTimeout(() => $('#ft')?.focus(), 50);
+}
+
+function drawEditImgs(){
+  const rid = ed.r?.id;
+  const box = $('#dishbox');
+  box.innerHTML = ed.dish ? `<div class="ph dishph"><img id="dishimg" alt=""><button type="button" class="rm" id="rmdish" aria-label="Fjern">✕</button></div>` : '';
+  if (ed.dish) {
+    const set = d => { const el = $('#dishimg'); if (el && d) el.src = d; };
+    ed.dish.data ? set(ed.dish.data) : loadImage(rid, ed.dish.id).then(set);
+    $('#rmdish').onclick = () => { if (ed.dish.existing) ed.removed.push(ed.dish.id); ed.dish = null; drawEditImgs(); };
+  }
+  const og = $('#origbox');
+  og.innerHTML = ed.originals.map((o, i) => `<div class="ph"><img data-oi="${i}" alt=""><button type="button" class="rm" data-rm="${i}" aria-label="Fjern">✕</button></div>`).join('');
+  og.style.marginBottom = ed.originals.length ? '0' : '-8px';
+  ed.originals.forEach((o, i) => {
+    const set = d => { const el = og.querySelector(`img[data-oi="${i}"]`); if (el && d) el.src = d; };
+    o.data ? set(o.data) : loadImage(rid, o.id).then(set);
+  });
+  og.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => {
+    const o = ed.originals.splice(+b.dataset.rm, 1)[0];
+    if (o.existing) ed.removed.push(o.id);
+    drawEditImgs();
+  });
+}
+
+function pick(target, camera){
+  const i = $('#file');
+  i.value = '';
+  i.multiple = target === 'orig' && !camera;
+  camera ? i.setAttribute('capture', 'environment') : i.removeAttribute('capture');
+  pickTarget = target;
+  i.click();
+}
+$('#file').addEventListener('change', async () => {
+  const files = [...$('#file').files];
+  if (!files.length || !ed) return;
+  busy(true, 'Behandler billede…');
+  try {
+    for (const f of files) {
+      if (pickTarget === 'dish') {
+        const data = await compress(f, 1600);
+        if (ed.dish?.existing) ed.removed.push(ed.dish.id);
+        ed.dish = { data };
+      } else {
+        ed.originals.push({ data: await compress(f, 2200) });   // højere opløsning så teksten kan læses
+      }
+    }
+    drawEditImgs();
+  } catch (e) { toast(e.message); }
+  busy(false);
+});
+
+async function save(){
+  const title = $('#ft').value.trim();
+  if (!title) { toast('Giv opskriften en titel'); return $('#ft').focus(); }
+  busy(true);
+  try {
+    const r = ed.r;
+    const ref = r ? doc(recCol(), r.id) : doc(recCol());
+    const put = async (img, kind) => {
+      if (img.existing) return img.id;
+      const iref = doc(collection(ref, 'images'));
+      await w(setDoc(iref, { data: img.data, kind, createdAt: Date.now() }));
+      imgCache.set(iref.id, img.data);
+      return iref.id;
+    };
+    const dishId = ed.dish ? await put(ed.dish, 'dish') : null;
+    const originalIds = [];
+    for (const o of ed.originals) originalIds.push(await put(o, 'original'));
+
+    let thumb = null;
+    const ts = ed.dish || ed.originals[0];
+    if (ts) {
+      const d = ts.data || imgCache.get(ts.id) || await loadImage(ref.id, ts.id);
+      if (d) thumb = await compress(d, 240, .7, 60000);
+    }
+    const data = {
+      title,
+      ingredients: $('#fi').value.trim(),
+      steps: $('#fs').value.trim(),
+      servings: $('#fp').value.trim(),
+      time: $('#fz').value.trim(),
+      tags: $('#fg').value.split(',').map(t => t.trim()).filter(Boolean),
+      source: $('#fq').value.trim(),
+      notes: $('#fn').value.trim(),
+      dishId, originalIds, thumb,
+      createdAt: r?.createdAt || Date.now(),
+      updatedAt: Date.now()
+    };
+    await w(setDoc(ref, data));
+    for (const id of ed.removed) { w(deleteDoc(doc(ref, 'images', id))).catch(() => {}); imgCache.delete(id); }
+    editBuiltFor = null;
+    location.replace('#/r/' + ref.id);
+    toast(navigator.onLine ? 'Gemt ✓' : 'Gemt – synkroniseres når du er online');
+  } catch (e) {
+    toast('Kunne ikke gemme: ' + e.message);
+  }
+  busy(false);
+}
+
+/* ---------- ikon til hjemmeskærm ---------- */
+try {
+  const c = document.createElement('canvas'); c.width = c.height = 180;
+  const x = c.getContext('2d');
+  x.fillStyle = '#b5532f'; x.fillRect(0, 0, 180, 180);
+  x.font = '110px serif'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.fillText('🍲', 90, 98);
+  $('#touchicon').href = c.toDataURL('image/png');
+} catch (e) {}
+
+/* ---------- start ---------- */
+if (configured) {
+  const fb = initializeApp(firebaseConfig);
+  auth = getAuth(fb);
+  try {
+    db = initializeFirestore(fb, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
+  } catch (e) {
+    db = initializeFirestore(fb, {});
+  }
+  onAuthStateChanged(auth, u => {
+    user = u; authReady = true; loaded = false;
+    if (unsub) { unsub(); unsub = null; }
+    recipes = [];
+    if (u) {
+      unsub = onSnapshot(recCol(), snap => {
+        recipes = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .sort((a, b) => (a.title || '').localeCompare(b.title || '', 'da'));
+        loaded = true;
+        render();
+      }, err => { loaded = true; toast('Databasefejl: ' + err.message); render(); });
+    }
+    render();
+  });
+}
+lastRoute = route();
+render();
+</script>
+</body>
+</html>
