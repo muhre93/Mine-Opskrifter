@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mine opskrifter</title>
 <meta name="description" content="Mine egne opskrifter – altid med i lommen">
+<meta property="og:title" content="Mine opskrifter">
+<meta property="og:description" content="En opskrift er blevet delt med dig 🍲">
 <meta name="theme-color" content="#fbf5ec" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#191513" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -36,8 +38,9 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);
+body{--maxw:760px;margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);
   padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+body.v-list,body.v-detail,body.v-shared{--maxw:1100px}
 button{font:inherit;color:inherit}
 a{color:var(--accent)}
 h1,h2,h3{font-family:var(--serif);font-weight:650;letter-spacing:-.01em}
@@ -45,20 +48,20 @@ h1,h2,h3{font-family:var(--serif);font-weight:650;letter-spacing:-.01em}
 /* header */
 header{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 92%,transparent);
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  padding:calc(10px + env(safe-area-inset-top)) 16px 10px}
-.bar{display:flex;align-items:center;gap:6px;max-width:760px;margin:0 auto;min-height:40px}
+  padding:calc(10px + env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left))}
+.bar{display:flex;align-items:center;gap:6px;max-width:var(--maxw);margin:0 auto;min-height:40px}
 .bar h1{font-size:20px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-body.home .bar h1{font-size:30px;line-height:1.1}
-.sub{max-width:760px;margin:2px auto 0;color:var(--muted);font-size:15px}
+body.v-list .bar h1{font-size:30px;line-height:1.1}
+.sub{max-width:var(--maxw);margin:2px auto 0;color:var(--muted);font-size:15px}
 .icon{background:none;border:0;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:none}
 .icon:active{background:var(--chip)}
 .icon svg{width:24px;height:24px}
-.searchwrap{max-width:760px;margin:12px auto 0;position:relative}
+.searchwrap{max-width:var(--maxw);margin:12px auto 0;position:relative}
 .searchwrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--muted);pointer-events:none}
 #search{width:100%;font:inherit;font-size:16px;padding:13px 14px 13px 44px;border-radius:16px;border:1px solid var(--line);
   background:var(--card);color:var(--ink);outline:none;box-shadow:var(--shadow)}
 #search:focus{border-color:var(--accent)}
-main{max-width:760px;margin:0 auto;padding:8px 16px}
+main{max-width:calc(var(--maxw) + 32px);margin:0 auto;padding:8px max(16px,env(safe-area-inset-right)) 8px max(16px,env(safe-area-inset-left))}
 
 /* banner */
 .banner{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,var(--accent),#d9773f);color:#fff;
@@ -69,17 +72,23 @@ main{max-width:760px;margin:0 auto;padding:8px 16px}
 .banner .btn{background:#fff;color:#a8431f;border:0;padding:8px 14px}
 .banner .bx{background:none;border:0;color:#fff;opacity:.8;font-size:16px;padding:4px 6px;cursor:pointer}
 
-/* categories */
+/* kategorier */
 .cats{display:flex;gap:8px;overflow-x:auto;margin:4px -16px 12px;padding:2px 16px 6px;scrollbar-width:none}
 .cats::-webkit-scrollbar{display:none}
+@media (hover:hover) and (pointer:fine), (min-width:760px){
+  .cats{flex-wrap:wrap;overflow:visible;margin:4px 0 12px;padding:2px 0 6px}
+}
 .cat{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;cursor:pointer;
   font-weight:600;font-size:14px;white-space:nowrap}
+.cat:hover{border-color:var(--accent)}
 .cat.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .cat.ghost{color:var(--muted)}
-.count{color:var(--muted);font-size:14px;margin:0 2px 10px}
+.listhead{display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--muted);font-size:14px;margin:0 2px 10px}
+.linkbtn{background:none;border:0;color:var(--accent);font-weight:700;font-size:14px;cursor:pointer;padding:4px 0;white-space:nowrap}
 
-/* recipe grid */
+/* opskriftskort */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:14px}
+@media (min-width:760px){.grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}}
 .rcard{display:block;background:var(--card);border-radius:20px;overflow:hidden;text-decoration:none;color:inherit;
   box-shadow:var(--shadow);border:1px solid var(--line);transition:transform .15s}
 .rcard:active{transform:scale(.98)}
@@ -94,7 +103,7 @@ main{max-width:760px;margin:0 auto;padding:8px 16px}
 .empty .big{font-size:56px;line-height:1}
 .empty h3{color:var(--ink);font-size:22px;margin:12px 0 4px}
 
-#fab{position:fixed;right:20px;bottom:calc(22px + env(safe-area-inset-bottom));height:58px;padding:0 22px 0 18px;border-radius:999px;
+#fab{position:fixed;right:max(20px,env(safe-area-inset-right));bottom:calc(22px + env(safe-area-inset-bottom));height:58px;padding:0 22px 0 18px;border-radius:999px;
   border:0;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px;
   box-shadow:0 8px 22px rgba(194,86,45,.4);cursor:pointer;z-index:20}
 #fab span{font-size:28px;line-height:1;margin-top:-3px}
@@ -105,14 +114,26 @@ main{max-width:760px;margin:0 auto;padding:8px 16px}
 .chip.on{background:var(--accent);color:var(--accent-ink)}
 .chip.add{background:none;border:1px dashed var(--line);color:var(--muted)}
 .chip.cat-c{background:var(--accent-soft);font-weight:600}
+span.chip{cursor:default}
 
-/* detail */
-.hero{margin:0 -16px;height:min(48vh,420px);overflow:hidden;background:linear-gradient(135deg,var(--ph1),var(--ph2))}
+/* opskrift */
+.hero{margin:0 -16px;height:min(34vh,380px);overflow:hidden;background:linear-gradient(135deg,var(--ph1),var(--ph2))}
 .hero img{width:100%;height:100%;display:block;object-fit:cover;cursor:zoom-in}
 .dcard{position:relative}
 .dcard.over{margin:-30px -16px 0;padding:20px 16px 0;background:var(--bg);border-radius:26px 26px 0 0}
 .detail h2{font-size:30px;line-height:1.15;margin:6px 0 6px}
 .meta{color:var(--muted);font-size:15px;display:flex;gap:14px;flex-wrap:wrap}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:999px;
+  padding:8px 14px;font-weight:700;font-size:14px;cursor:pointer;box-shadow:var(--shadow)}
+.pill.on{background:var(--gold);color:#2d2420;border-color:var(--gold)}
+.sw{width:34px;height:20px;border-radius:999px;background:var(--line);position:relative;transition:.2s;flex:none}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.pill.on .sw{background:#2d2420}
+.pill.on .sw::after{left:16px}
+.sharetop{background:var(--accent-soft);border-radius:18px;padding:12px 14px;margin:6px 0 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sharetop .st{flex:1;min-width:180px;line-height:1.35}
+.sharetop .st b{display:block}
 section{margin-top:26px}
 section>h3{font-size:20px;margin:0 0 10px;display:flex;align-items:baseline;gap:8px}
 section>h3 small{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--muted)}
@@ -145,16 +166,31 @@ section>h3 small{font-family:var(--sans);font-size:13px;font-weight:600;color:va
 .part summary::before{content:"▸ "}
 .part details[open] summary::before{content:"▾ "}
 .part details .ings{border:0;border-radius:0;border-top:1px solid var(--line)}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:30px}
-.actions .wide{grid-column:1/-1}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:34px;max-width:520px}
+.delrow{margin-top:26px;text-align:center}
+.linkdel{background:none;border:0;color:var(--muted);font-size:13px;text-decoration:underline;cursor:pointer;padding:8px}
+.linkdel:hover{color:var(--danger)}
 .btn{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:12px 16px;cursor:pointer;font-weight:700}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .btn.danger{color:var(--danger)}
-.btn.on{background:var(--accent-soft);border-color:var(--accent)}
 .btn.sm{padding:8px 12px;font-size:14px;border-radius:12px}
 .btn:disabled{opacity:.6}
 
-/* form */
+/* bred skærm / liggende: to kolonner */
+@media (min-width:760px){
+  .hero{margin:0;border-radius:24px;height:min(40vh,400px)}
+  .dcard.over{margin:0;padding:18px 0 0;border-radius:0;background:none}
+  .cols{display:grid;grid-template-columns:minmax(260px,2fr) 3fr;gap:36px;align-items:start}
+  .cols.one{display:block}
+}
+@media (orientation:landscape) and (max-height:540px){
+  header{position:relative}
+  #hsub{display:none!important}
+  body.v-list .bar h1{font-size:24px}
+  .hero{height:48vh}
+}
+
+/* formular */
 .form label{display:block;font-size:14px;font-weight:700;margin:20px 0 6px}
 .form .help{font-weight:400;color:var(--muted)}
 .form input[type=text],.form textarea,.sinput{
@@ -170,7 +206,7 @@ section>h3 small{font-family:var(--sans);font-size:13px;font-weight:600;color:va
 .ph{position:relative;border-radius:12px;overflow:hidden;background:var(--chip)}
 .ph img{width:100%;height:100%;object-fit:cover;display:block}
 .rm-x{position:absolute;top:6px;right:6px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:15px;cursor:pointer}
-.dishph{aspect-ratio:4/3}
+.dishph{aspect-ratio:4/3;max-height:340px}
 .origgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
 .origgrid .ph{aspect-ratio:3/4}
 .partlist .prow{padding:6px 4px;cursor:default}
@@ -184,16 +220,22 @@ section>h3 small{font-family:var(--sans);font-size:13px;font-weight:600;color:va
 .login h2{font-size:34px;margin:16px 0 4px}
 .gbtn{display:inline-flex;align-items:center;gap:10px;margin-top:26px;padding:14px 24px;font-size:16px}
 
-/* sheet */
+/* bundpanel */
 #sheet{position:fixed;inset:0;z-index:40}
 #sheet .bg{position:absolute;inset:0;background:rgba(20,12,8,.45)}
 #sheet .panel{position:absolute;left:0;right:0;bottom:0;max-height:88vh;overflow:auto;background:var(--bg);
-  border-radius:24px 24px 0 0;padding:8px 18px calc(22px + env(safe-area-inset-bottom));max-width:760px;margin:0 auto;
+  border-radius:24px 24px 0 0;padding:8px 18px calc(22px + env(safe-area-inset-bottom));max-width:620px;margin:0 auto;
   animation:up .22s ease-out}
 @keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
 .grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:4px auto 10px}
 .sh{font-size:22px;margin:6px 0 12px}
 .sh2{font-size:17px;margin:22px 0 8px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;align-items:center;gap:14px;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:12px 14px;cursor:pointer;width:100%}
+.opt:hover{border-color:var(--accent)}
+.opt .oi{font-size:24px;width:32px;text-align:center;flex:none}
+.opt b{display:block}
+.opt small{color:var(--muted);font-size:13px}
 .catrow{display:flex;align-items:center;gap:6px;padding:8px 0;border-bottom:1px solid var(--line)}
 .catrow .emo{font-size:22px;background:var(--chip);border:0;border-radius:12px;width:42px;height:42px;cursor:pointer;flex:none}
 .catrow .nm{flex:1;font-weight:700;min-width:0}
@@ -211,7 +253,7 @@ section>h3 small{font-family:var(--sans);font-size:13px;font-weight:600;color:va
 .howto li{margin-bottom:12px}
 .howto svg{width:20px;height:20px;vertical-align:-4px;color:var(--accent)}
 .muted{color:var(--muted)}
-.setup{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
+.col2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
 /* overlays */
 #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:50;overflow:auto;display:flex;align-items:center;justify-content:center}
@@ -222,6 +264,32 @@ section>h3 small{font-family:var(--sans);font-size:13px;font-weight:600;color:va
 #toast.show{opacity:1}
 #busy{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:55;display:grid;place-items:center;color:#fff;font-weight:700}
 [hidden]{display:none!important}
+
+/* udskrift / PDF */
+#print{display:none}
+@media print{
+  @page{margin:15mm}
+  html,body{background:#fff!important;color:#111!important}
+  body{padding:0!important}
+  body>*:not(#print){display:none!important}
+  #print{display:block;font:11pt/1.5 Georgia,"Times New Roman",serif;color:#111}
+  .prec{break-after:page;page-break-after:always}
+  .prec:last-child{break-after:auto;page-break-after:auto}
+  .prec h1{font-size:24pt;margin:0 0 4pt;line-height:1.15}
+  .prec h2{font-size:12.5pt;margin:12pt 0 4pt;padding-bottom:2pt;border-bottom:1pt solid #ccc}
+  .pmeta{color:#555;font-size:10pt;margin:0 0 8pt}
+  .pimg{float:right;width:6.5cm;height:4.8cm;object-fit:cover;border-radius:6pt;margin:0 0 8pt 14pt}
+  .pcols{display:grid;grid-template-columns:1fr 1.6fr;gap:16pt;clear:both}
+  .prec ul{padding-left:14pt;margin:0}
+  .prec li{margin:0 0 2pt}
+  .prec li.psub{list-style:none;margin:6pt 0 2pt -14pt;font-weight:bold}
+  .prec ol{padding-left:16pt;margin:0}
+  .prec ol li{margin-bottom:5pt}
+  .pnotes{border-left:3pt solid #e9a23b;padding-left:8pt;font-style:italic;white-space:pre-wrap}
+  .pcover{padding-top:30mm}
+  .pcover h1{font-size:34pt}
+  .toc{columns:2;font-size:12pt;margin-top:20pt}
+}
 </style>
 </head>
 <body>
@@ -240,10 +308,12 @@ section>h3 small{font-family:var(--sans);font-size:13px;font-weight:600;color:va
 <main id="app"><p class="muted">Indlæser…</p></main>
 <button id="fab" aria-label="Ny opskrift" hidden><span>+</span>Ny opskrift</button>
 <input type="file" id="file" accept="image/*" hidden>
+<input type="file" id="impfile" accept=".json,application/json" hidden>
 <div id="sheet" hidden><div class="bg"></div><div class="panel"><div class="grab"></div><div id="sheetbody"></div></div></div>
 <div id="lightbox" hidden><img alt=""><button class="close" aria-label="Luk">✕</button></div>
 <div id="busy" hidden>Gemmer…</div>
 <div id="toast"></div>
+<div id="print"></div>
 
 <script type="module">
 /* ============================================================
@@ -281,17 +351,22 @@ let auth, db, user = null, authReady = false, loaded = false, unsub = null, setU
 let recipes = [];
 let categories = [];
 let activeCat = lsGet('activeCat') || null;
-let editBuiltFor = null;
+let editBuiltFor = null;   // hvilken rute formularen er bygget til
+let editRoute = null;      // aktiv redigerings-rute (bruges til "vil du gemme?")
+let dirtyBase = null;      // formularens udgangspunkt
+let allowLeave = false;
+let pendingDraft = null, draftChecked = false, draftT = null;
 let ed = null;
 let pickTarget = null;
 let listScroll = 0, lastRoute = null;
-let wakeLock = null;
+let wakeLock = null, wantWake = false;
 let sheetRefresh = null;
 let deferredPrompt = null;
 const imgCache = new Map();
 const checked = new Map();
+const sharedCache = new Map();
 
-/* ---------- helpers ---------- */
+/* ---------- hjælpere ---------- */
 function lsGet(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
 function lsSet(k, v){ try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -299,16 +374,28 @@ const norm = s => String(s || '').toLocaleLowerCase('da');
 const lines = s => String(s || '').split('\n').map(l => l.trim()).filter(Boolean);
 const isSub = l => /:$/.test(l);
 const nIng = arr => arr.filter(l => !isSub(l)).length;
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 const route = () => location.hash || '#/';
 const find = id => recipes.find(r => r.id === id);
 const recCol = () => collection(db, 'users', user.uid, 'recipes');
 const setRef = () => doc(db, 'users', user.uid, 'settings', 'main');
 const catEmoji = r => (categories.find(c => (r.categories || []).includes(c.name)) || {}).emoji || '🍲';
 const thumbHtml = r => `<div class="th">${r.thumb ? `<img src="${r.thumb}" alt="">` : catEmoji(r)}</div>`;
-function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2600); }
+const shareUrl = id => location.origin + location.pathname + '#/s/' + id;
+const fileName = t => (String(t).replace(/[\\/:*?"<>|#]+/g, '').trim() || 'opskrifter') + ' - Mine opskrifter.json';
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2800); }
 function busy(on, txt = 'Gemmer…'){ const b = $('#busy'); b.textContent = txt; b.hidden = !on; }
 // Offline: Firestore køer skrivningen lokalt – vent kun på serveren når vi er online
 const w = p => navigator.onLine ? p : (p.catch(e => toast('Fejl: ' + e.message)), Promise.resolve());
+async function copyText(t){
+  try { await navigator.clipboard.writeText(t); return true; }
+  catch (e) {
+    const ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    let ok = false; try { ok = document.execCommand('copy'); } catch (e2) {}
+    ta.remove(); return ok;
+  }
+}
 
 /* ---------- bundpanel ---------- */
 function openSheet(html){ $('#sheetbody').innerHTML = html; $('#sheet').hidden = false; document.body.style.overflow = 'hidden'; }
@@ -347,7 +434,7 @@ async function install(){
         <li>Vælg <b>Installér app</b> eller <b>Føj til startskærm</b></li>
         <li>Bekræft – så ligger Mine opskrifter som en app 🎉</li>
       </ol>
-      <p class="muted">I Samsung Internet hedder det <b>Tilføj side til → Startskærm</b>.</p>${ok}`);
+      <p class="muted">I Samsung Internet hedder det <b>Tilføj side til → Startskærm</b>. På computeren finder du det i Chromes adresselinje.</p>${ok}`);
 }
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -385,7 +472,7 @@ async function compress(src, max, q = .85, limit = 900000){
   return out;
 }
 async function loadImage(rid, iid){
-  if (!iid || !rid) return null;
+  if (!iid || !rid || !user) return null;
   if (imgCache.has(iid)) return imgCache.get(iid);
   try {
     const s = await getDoc(doc(db, 'users', user.uid, 'recipes', rid, 'images', iid));
@@ -398,51 +485,146 @@ function openLightbox(src){ if (!src) return; const lb = $('#lightbox'); lb.quer
 $('#lightbox').addEventListener('click', e => { if (e.target.tagName !== 'IMG') $('#lightbox').hidden = true; });
 
 /* ---------- hold skærmen tændt ---------- */
-async function toggleWake(){
+async function acquireWake(){
   try {
-    if (wakeLock) { await wakeLock.release(); wakeLock = null; }
-    else if ('wakeLock' in navigator) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; syncWakeBtn(); }); }
-    else toast('Din browser understøtter ikke dette');
-  } catch (e) { toast('Kunne ikke holde skærmen tændt'); }
+    wakeLock = await navigator.wakeLock.request('screen');
+    wakeLock.addEventListener('release', () => { wakeLock = null; });
+  } catch (e) { wakeLock = null; }
+}
+async function toggleWake(){
+  if (!('wakeLock' in navigator)) return toast('Din telefon/browser understøtter ikke dette – prøv at opdatere den');
+  wantWake = !wantWake;
+  if (wantWake) {
+    await acquireWake();
+    if (!wakeLock) { wantWake = false; toast('Kunne ikke holde skærmen tændt'); }
+    else toast('Skærmen slukker ikke, mens opskriften er åben ☀️');
+  } else {
+    try { await wakeLock?.release(); } catch (e) {}
+    wakeLock = null;
+  }
   syncWakeBtn();
 }
-function syncWakeBtn(){ const b = $('#wake'); if (b) { b.classList.toggle('on', !!wakeLock); b.textContent = wakeLock ? '☀️ Skærmen holdes tændt' : '☀️ Hold skærmen tændt mens jeg laver mad'; } }
-function stopWake(){ if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; } }
+// Telefonen slipper låsen, når appen er i baggrunden – tag den igen, når man kommer tilbage
+document.addEventListener('visibilitychange', () => { if (wantWake && document.visibilityState === 'visible' && !wakeLock) acquireWake(); });
+function syncWakeBtn(){
+  const b = $('#wake'); if (!b) return;
+  b.classList.toggle('on', wantWake);
+  b.querySelector('.wl').textContent = wantWake ? 'Skærmen holdes tændt' : 'Hold skærmen tændt';
+}
+function stopWake(){ wantWake = false; if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; } }
+const wakePill = () => `<button class="pill" id="wake"><span class="sw"></span><span>☀️</span><span class="wl">Hold skærmen tændt</span></button>`;
 
 /* ---------- topbjælke ---------- */
 function chrome(view, title = 'Mine opskrifter'){
-  document.body.classList.toggle('home', view === 'list');
-  $('#back').hidden = !['detail', 'edit'].includes(view);
-  $('#gear').hidden = !user || view === 'login';
+  document.body.className = 'v-' + view;
+  $('#back').hidden = !['detail', 'edit', 'shared'].includes(view) || (view === 'shared' && !user);
+  $('#gear').hidden = !user || !['list', 'detail'].includes(view);
   $('#hsub').hidden = view !== 'list';
   $('#searchwrap').hidden = view !== 'list';
   $('#fab').hidden = view !== 'list';
-  $('#htitle').textContent = view === 'list' || view === 'login' ? 'Mine opskrifter' : title;
+  $('#htitle').textContent = title;
 }
 $('#back').onclick = () => {
   const h = route(); let m;
-  if ((m = h.match(/^#\/(edit|copy)\/(.+)$/))) location.hash = '#/r/' + m[2];
+  if (h === '#/new') leaveEdit('#/');
+  else if ((m = h.match(/^#\/edit\/(.+)$/))) leaveEdit('#/r/' + m[1]);
+  else if ((m = h.match(/^#\/copy\/(.+)$/))) leaveEdit('#/r/' + m[1]);
   else location.hash = '#/';
 };
 $('#fab').onclick = () => { location.hash = '#/new'; };
 $('#gear').onclick = () => openSettings();
 searchEl.addEventListener('input', () => { if (route() === '#/') renderList(); });
 
+/* ---------- ikke-gemte ændringer ---------- */
+function formFields(){
+  if (!$('#ft')) return null;
+  return { t: $('#ft').value, i: $('#fi').value, s: $('#fs').value, p: $('#fp').value, z: $('#fz').value,
+           g: $('#fg').value, q: $('#fq').value, n: $('#fn').value };
+}
+const edState = () => JSON.stringify([formFields(), ed.cats, ed.parts,
+  ed.dish ? (ed.dish.id || ed.dish.data.length) : 0, ed.originals.map(o => o.id || o.data.length)]);
+const isDirty = () => !!(ed && editRoute && $('#f') && dirtyBase && edState() !== dirtyBase);
+
+function markChanged(){ clearTimeout(draftT); draftT = setTimeout(saveDraftNow, 400); }
+function saveDraftNow(){
+  clearTimeout(draftT);
+  if (!ed || !$('#f')) return;
+  if (!isDirty()) { lsSet('draft', null); return; }
+  const d = { uid: user?.uid, route: ed.r ? '#/edit/' + ed.r.id : '#/new', ts: Date.now(), f: formFields(),
+    cats: ed.cats, parts: ed.parts, dish: ed.dish, originals: ed.originals, removed: ed.removed, fromId: ed.fromId || null };
+  try { localStorage.setItem('draft', JSON.stringify(d)); }
+  catch (e) {
+    // For stort med billeder – gem teksten
+    const lost = (ed.dish && !ed.dish.existing) || ed.originals.some(o => !o.existing);
+    d.dish = ed.dish?.existing ? ed.dish : null;
+    d.originals = ed.originals.filter(o => o.existing);
+    d.lostImgs = lost;
+    try { localStorage.setItem('draft', JSON.stringify(d)); } catch (e2) {}
+  }
+}
+function clearDraft(){ clearTimeout(draftT); lsSet('draft', null); }
+function getDraft(){ try { const d = JSON.parse(lsGet('draft')); return d && d.uid === user?.uid ? d : null; } catch (e) { return null; } }
+
+function askUnsaved(discard){
+  openSheet(`<h3 class="sh">Vil du gemme opskriften?</h3>
+    <p class="muted" style="margin-top:-6px">Du har ændringer, der ikke er gemt endnu.</p>
+    <div class="opts">
+      <button class="btn primary" id="uSave">💾 Gem opskrift</button>
+      <button class="btn" id="uKeep">Fortsæt med at redigere</button>
+      <button class="btn danger" id="uDrop">Kassér ændringer</button>
+    </div>`);
+  $('#uSave').onclick = () => { closeSheet(); save(); };
+  $('#uKeep').onclick = closeSheet;
+  $('#uDrop').onclick = () => { closeSheet(); clearDraft(); discard(); };
+}
+function leaveEdit(target){
+  const go = () => { allowLeave = true; clearDraft(); location.hash = target; };
+  if (isDirty()) askUnsaved(go); else go();
+}
+window.addEventListener('beforeunload', e => {
+  if (isDirty()) { saveDraftNow(); e.preventDefault(); e.returnValue = ''; }
+});
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && isDirty()) saveDraftNow(); });
+
+function checkDraft(){
+  if (draftChecked) return;
+  draftChecked = true;
+  const d = getDraft(); if (!d) return;
+  if (d.route.startsWith('#/edit/') && !find(d.route.slice(7))) d.route = '#/new';
+  if (route() === d.route) {
+    pendingDraft = d;
+    editBuiltFor = null; render();
+    toast('Din kladde er hentet frem igen');
+    return;
+  }
+  const when = new Date(d.ts).toLocaleString('da-DK', { weekday: 'short', hour: '2-digit', minute: '2-digit' });
+  openSheet(`<h3 class="sh">Vil du fortsætte, hvor du slap?</h3>
+    <p>Du var i gang med ${d.f?.t?.trim() ? `<b>${esc(d.f.t.trim())}</b>` : 'en ny opskrift'}, som ikke blev gemt <span class="muted">(${esc(when)})</span>.</p>
+    <div class="col2"><button class="btn" id="dDrop">Kassér</button><button class="btn primary" id="dGo">Fortsæt</button></div>`);
+  $('#dDrop').onclick = () => { clearDraft(); closeSheet(); };
+  $('#dGo').onclick = () => {
+    pendingDraft = d; closeSheet();
+    if (route() === d.route) { editBuiltFor = null; render(); } else location.hash = d.route;
+  };
+}
+
 /* ---------- router ---------- */
+function resetEdit(){ editBuiltFor = null; editRoute = null; ed = null; }
 function render(){
   const h = route();
-  if (!authReady) { chrome('login'); app.innerHTML = '<p class="muted">Indlæser…</p>'; return; }
-  if (!user) { editBuiltFor = null; chrome('login'); return renderLogin(); }
   let m;
+  if ((m = h.match(/^#\/s\/(.+)$/))) { resetEdit(); chrome('shared', 'Delt opskrift'); return renderShared(m[1]); }
+  if (!authReady) { chrome('login'); app.innerHTML = '<p class="muted">Indlæser…</p>'; return; }
+  if (!user) { resetEdit(); chrome('login'); return renderLogin(); }
   if (h === '#/new') { chrome('edit', 'Ny opskrift'); if (editBuiltFor !== h) renderEdit(null); return; }
   if ((m = h.match(/^#\/(edit|copy)\/(.+)$/))) {
-    chrome('edit', m[1] === 'copy' ? 'Kopi af opskrift' : 'Rediger');
+    chrome('edit', m[1] === 'copy' ? 'Kopi af opskrift' : 'Rediger opskrift');
     const r = find(m[2]);
     if (!r) { app.innerHTML = loaded ? '<p class="muted">Opskriften findes ikke.</p>' : '<p class="muted">Indlæser…</p>'; return; }
     if (editBuiltFor !== h) m[1] === 'copy' ? startCopy(r) : renderEdit(r);
     return;
   }
-  editBuiltFor = null;
+  resetEdit();
   if ((m = h.match(/^#\/r\/(.+)$/))) {
     const r = find(m[1]);
     chrome('detail', '');
@@ -453,38 +635,50 @@ function render(){
   renderList();
 }
 window.addEventListener('hashchange', () => {
+  const h = route();
+  // Er man ved at forlade en opskrift, der ikke er gemt (fx med telefonens tilbage-knap)?
+  if (!allowLeave && editRoute && h !== editRoute && isDirty()) {
+    history.pushState(null, '', editRoute);
+    askUnsaved(() => { allowLeave = true; history.back(); });
+    return;
+  }
+  if (editRoute && h !== editRoute) clearDraft();
+  allowLeave = false;
   if (lastRoute === '#/') listScroll = window.scrollY;
-  stopWake(); closeSheet();
+  if (!/^#\/(r|s)\//.test(h)) stopWake();
+  closeSheet();
   render();
-  if (route() === '#/') requestAnimationFrame(() => window.scrollTo(0, listScroll));
+  if (h === '#/') requestAnimationFrame(() => window.scrollTo(0, listScroll));
   else window.scrollTo(0, 0);
-  lastRoute = route();
+  lastRoute = h;
 });
 
 /* ---------- login ---------- */
+const G_SVG = '<svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+async function googleLogin(){
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  try { await signInWithPopup(auth, provider); return true; }
+  catch (err) {
+    const c = err.code || '';
+    if (c.includes('popup-blocked') || c.includes('operation-not-supported')) {
+      try { await signInWithRedirect(auth, provider); } catch (e2) { toast(authErr(e2)); }
+    } else if (!c.includes('popup-closed') && !c.includes('cancelled-popup')) toast(authErr(err));
+    return false;
+  }
+}
 function renderLogin(){
   app.innerHTML = `<div class="login">
     <img src="icons/icon-192.png" alt="">
     <h2>Mine opskrifter</h2>
     <p class="muted">Alle dine opskrifter samlet ét sted –<br>altid med i lommen.</p>
-    <button class="btn gbtn" id="gbtn">
-      <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
-      Log ind med Google
-    </button>
+    <button class="btn gbtn" id="gbtn">${G_SVG} Log ind med Google</button>
     ${isStandalone() ? '' : '<p style="margin-top:26px"><button class="btn sm" id="linst">📲 Læg appen på hjemmeskærmen</button></p>'}
   </div>`;
   const li = $('#linst'); if (li) li.onclick = install;
   $('#gbtn').onclick = async () => {
-    const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
     $('#gbtn').disabled = true;
-    try { await signInWithPopup(auth, provider); }
-    catch (err) {
-      const c = err.code || '';
-      if (c.includes('popup-blocked') || c.includes('operation-not-supported')) {
-        try { await signInWithRedirect(auth, provider); return; } catch (e2) { toast(authErr(e2)); }
-      } else if (!c.includes('popup-closed') && !c.includes('cancelled-popup')) toast(authErr(err));
-    }
+    await googleLogin();
     const b = $('#gbtn'); if (b) b.disabled = false;
   };
 }
@@ -543,8 +737,8 @@ function renderList(){
   } else if (!res.length) {
     body = `<div class="empty"><div class="big">🔍</div><h3>Intet fundet</h3><p>${terms.length ? 'Ingen opskrifter matcher din søgning' : 'Der er ingen opskrifter i denne kategori endnu'}.</p></div>`;
   } else {
-    const n = res.length;
-    body = `<div class="count">${n} ${n === 1 ? 'opskrift' : 'opskrifter'}${activeCat ? ' i ' + esc(activeCat) : ''}</div>
+    body = `<div class="listhead"><span>${plural(res.length, 'opskrift', 'opskrifter')}${activeCat ? ' i ' + esc(activeCat) : ''}</span>
+        <button class="linkbtn" id="exp">⬇︎ Eksportér${activeCat ? ' kategori' : ''}</button></div>
       <div class="grid">${res.map(({ r, hint }) => {
         const meta = [r.time && '⏱ ' + esc(r.time), (r.categories || []).map(esc).join(', ')].filter(Boolean).join(' · ');
         return `<a class="rcard" href="#/r/${r.id}">
@@ -563,6 +757,7 @@ function renderList(){
     activeCat = b.dataset.c || null; lsSet('activeCat', activeCat); renderList();
   });
   $('#editcats').onclick = openSettings;
+  const ex = $('#exp'); if (ex) ex.onclick = () => openExportSheet(res.map(x => x.r), activeCat || (terms.length ? 'Søgeresultat' : 'Alle opskrifter'));
   const bi = $('#bInst'); if (bi) bi.onclick = install;
   const bx = $('#bX'); if (bx) bx.onclick = () => { lsSet('installDismissed', '1'); renderList(); };
 }
@@ -592,7 +787,7 @@ function openSettings(){
         const cnt = recipes.filter(r => (r.categories || []).includes(c.name)).length;
         return `<div class="catrow">
           <button class="emo" data-emo="${i}" aria-label="Skift ikon">${c.emoji}</button>
-          <div class="nm">${esc(c.name)}<small>${cnt} ${cnt === 1 ? 'opskrift' : 'opskrifter'}</small></div>
+          <div class="nm">${esc(c.name)}<small>${plural(cnt, 'opskrift', 'opskrifter')}</small></div>
           ${i ? `<button class="icon" data-up="${i}" aria-label="Flyt op">↑</button>` : ''}
           <button class="icon" data-ren="${i}" aria-label="Omdøb">✏️</button>
           <button class="icon" data-del="${i}" aria-label="Slet">🗑</button>
@@ -602,6 +797,11 @@ function openSettings(){
         <input class="n" id="cn" placeholder="Ny kategori, fx Supper" aria-label="Navn">
         <button class="btn primary sm">Tilføj</button>
       </form>
+      <h3 class="sh2">Eksport og sikkerhedskopi</h3>
+      <div class="opts">
+        <button class="opt" id="sExp"><span class="oi">⬇︎</span><span><b>Eksportér alle opskrifter</b><small>Som PDF eller som fil med billeder</small></span></button>
+        <button class="opt" id="sImp"><span class="oi">📥</span><span><b>Importér fra fil</b><small>Hent opskrifter ind fra en eksporteret fil</small></span></button>
+      </div>
       <h3 class="sh2">App</h3>
       <button class="btn" style="width:100%" id="sInst">📲 Læg appen på hjemmeskærmen</button>
       <h3 class="sh2">Konto</h3>
@@ -648,6 +848,8 @@ function openSettings(){
       } catch (e) { toast('Fejl: ' + e.message); }
       busy(false); draw();
     });
+    $('#sExp').onclick = () => openExportSheet(recipes, 'Alle opskrifter');
+    $('#sImp').onclick = () => { const i = $('#impfile'); i.value = ''; i.click(); };
     $('#sInst').onclick = install;
     $('#sOut').onclick = () => { if (confirm('Log ud?')) { closeSheet(); signOut(auth); } };
   };
@@ -655,63 +857,93 @@ function openSettings(){
   draw();
 }
 
-/* ---------- visning af opskrift ---------- */
-function renderDetail(r){
-  const ings = lines(r.ingredients), steps = lines(r.steps), origs = r.originalIds || [];
-  const parts = (r.parts || []).map(find).filter(Boolean);
-  const usedIn = recipes.filter(x => (x.parts || []).includes(r.id));
-  const chk = checked.get(r.id) || new Set();
-  const ingList = (arr, pre) => `<ul class="ings">${arr.map((l, i) => isSub(l)
+/* ---------- fælles visning af en opskrift ---------- */
+function ingListHtml(arr, pre, chk){
+  return `<ul class="ings">${arr.map((l, i) => isSub(l)
     ? `<li class="sub">${esc(l)}</li>`
     : `<li data-k="${pre}:${i}" class="${chk.has(pre + ':' + i) ? 'done' : ''}">${esc(l)}</li>`).join('')}</ul>`;
+}
+const stepsHtml = arr => `<ol class="steps">${arr.map(s => `<li>${esc(s)}</li>`).join('')}</ol>`;
+function partHtml(p, pid, chk, href){
+  const pl = lines(p.ingredients), ps = lines(p.steps);
+  const head = `${thumbHtml(p)}<span class="pt">${esc(p.title)}<small>${nIng(pl)} ingredienser${href ? ' · tryk for hele opskriften' : ''}</small></span>`;
+  const showSteps = !href && ps.length;
+  return `<div class="part">
+    ${href ? `<a class="prow" href="${href}">${head}<span class="go">›</span></a>` : `<div class="prow" style="cursor:default">${head}</div>`}
+    ${pl.length || showSteps ? `<details><summary>${showSteps ? 'Vis ingredienser og fremgangsmåde' : 'Vis ingredienser'}</summary>
+      ${pl.length ? ingListHtml(pl, 'p' + pid, chk) : ''}
+      ${showSteps ? `<div style="padding:16px 14px 0">${stepsHtml(ps)}</div>` : ''}</details>` : ''}
+  </div>`;
+}
+function recipeHtml(r, o){
+  const ings = lines(r.ingredients), steps = lines(r.steps);
   const src = String(r.source || '').trim();
   const srcHtml = /^https?:\/\//i.test(src) ? `<a href="${esc(src)}" target="_blank" rel="noopener">${esc(src)}</a>` : esc(src);
-
-  app.innerHTML = `<article class="detail">
-    ${r.dishId ? `<div class="hero"><img id="hero" src="${r.thumb || ''}" alt=""></div>` : ''}
-    <div class="dcard ${r.dishId ? 'over' : ''}">
-      ${(r.categories || []).length ? `<div class="chips" style="margin:0">${r.categories.map(c => `<button class="chip cat-c" data-cat="${esc(c)}">${(categories.find(x => x.name === c) || {}).emoji || ''} ${esc(c)}</button>`).join('')}</div>` : ''}
+  const colA = (o.parts.length ? `<section><h3>Består af <small>${plural(o.parts.length, 'opskrift', 'opskrifter')}</small></h3>
+        ${o.parts.map(p => partHtml(p, p.id || p.key, o.chk, o.partHref ? o.partHref(p) : null)).join('')}</section>` : '')
+    + (ings.length ? `<section><h3>${o.parts.length ? 'Derudover' : 'Ingredienser'} <small>${nIng(ings)} stk.</small></h3>${ingListHtml(ings, 'm', o.chk)}</section>` : '');
+  const colB = (steps.length ? `<section><h3>Fremgangsmåde</h3>${stepsHtml(steps)}</section>` : '')
+    + (r.notes ? `<section><h3>Noter</h3><div class="notes">${esc(r.notes)}</div></section>` : '')
+    + (o.extraB || '')
+    + (src ? `<section><h3>Kilde</h3><div>${srcHtml}</div></section>` : '');
+  const catChip = c => o.own
+    ? `<button class="chip cat-c" data-cat="${esc(c)}">${(categories.find(x => x.name === c) || {}).emoji || ''} ${esc(c)}</button>`
+    : `<span class="chip cat-c">${esc(c)}</span>`;
+  const tagChip = t => o.own ? `<button class="chip" data-tag="${esc(t)}">#${esc(t)}</button>` : `<span class="chip">#${esc(t)}</span>`;
+  return `<article class="detail">
+    ${o.top || ''}
+    <div class="tools">${o.tools}</div>
+    ${o.hero ? `<div class="hero"><img id="hero" src="${o.hero}" alt=""></div>` : ''}
+    <div class="dcard ${o.hero ? 'over' : ''}">
+      ${(r.categories || []).length ? `<div class="chips" style="margin:0">${r.categories.map(catChip).join('')}</div>` : ''}
       <h2>${esc(r.title)}</h2>
       <div class="meta">${[r.servings && '🍽 ' + esc(r.servings), r.time && '⏱ ' + esc(r.time)].filter(Boolean).map(x => `<span>${x}</span>`).join('')}</div>
-      ${(r.tags || []).length ? `<div class="chips">${r.tags.map(t => `<button class="chip" data-tag="${esc(t)}">#${esc(t)}</button>`).join('')}</div>` : ''}
-
-      ${parts.length ? `<section><h3>Består af <small>${parts.length} ${parts.length === 1 ? 'opskrift' : 'opskrifter'}</small></h3>
-        ${parts.map(p => { const pl = lines(p.ingredients); return `<div class="part">
-          <a class="prow" href="#/r/${p.id}">${thumbHtml(p)}<span class="pt">${esc(p.title)}<small>${nIng(pl)} ingredienser · tryk for hele opskriften</small></span><span class="go">›</span></a>
-          ${pl.length ? `<details><summary>Vis ingredienser</summary>${ingList(pl, 'p' + p.id)}</details>` : ''}
-        </div>`; }).join('')}</section>` : ''}
-
-      ${ings.length ? `<section><h3>${parts.length ? 'Derudover' : 'Ingredienser'} <small>${nIng(ings)} stk.</small></h3>${ingList(ings, 'm')}</section>` : ''}
-      ${steps.length ? `<section><h3>Fremgangsmåde</h3><ol class="steps">${steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol></section>` : ''}
-      ${r.notes ? `<section><h3>Noter</h3><div class="notes">${esc(r.notes)}</div></section>` : ''}
-      ${origs.length ? `<section><h3>Original opskrift</h3><div class="origs">${origs.map(id =>
-          `<button class="og" data-id="${id}"><img data-img="${id}" alt="Original opskrift"></button>`).join('')}</div></section>` : ''}
-      ${usedIn.length ? `<section><h3>Bruges i</h3><div class="chips" style="margin:0">${usedIn.map(u => `<a class="chip" href="#/r/${u.id}">🔗 ${esc(u.title)}</a>`).join('')}</div></section>` : ''}
-      ${src ? `<section><h3>Kilde</h3><div>${srcHtml}</div></section>` : ''}
-
-      <div class="actions">
-        <button class="btn wide" id="wake"></button>
-        <button class="btn primary" id="edit">✏️ Rediger</button>
-        <button class="btn" id="copy">📄 Lav en kopi</button>
-        <button class="btn danger wide" id="del">🗑 Slet opskrift</button>
-      </div>
+      ${(r.tags || []).length ? `<div class="chips">${r.tags.map(tagChip).join('')}</div>` : ''}
+      <div class="cols ${colA ? '' : 'one'}"><div class="col-a">${colA}</div><div class="col-b">${colB}</div></div>
+      ${o.bottom || ''}
     </div>
   </article>`;
+}
+function bindRecipeCommon(ckey){
   syncWakeBtn();
   $('#wake').onclick = toggleWake;
-  $('#edit').onclick = () => { location.hash = '#/edit/' + r.id; };
+  app.querySelectorAll('.ings li[data-k]').forEach(li => li.onclick = () => {
+    const k = li.dataset.k, s = checked.get(ckey) || new Set();
+    s.has(k) ? s.delete(k) : s.add(k); checked.set(ckey, s); li.classList.toggle('done');
+  });
+}
+
+/* ---------- egen opskrift ---------- */
+function renderDetail(r){
+  const parts = (r.parts || []).map(find).filter(Boolean);
+  const usedIn = recipes.filter(x => (x.parts || []).includes(r.id));
+  const origs = r.originalIds || [];
+  const extraB = (origs.length ? `<section><h3>Original opskrift</h3><div class="origs">${origs.map(id =>
+        `<button class="og" data-id="${id}"><img data-img="${id}" alt="Original opskrift"></button>`).join('')}</div></section>` : '')
+    + (usedIn.length ? `<section><h3>Bruges i</h3><div class="chips" style="margin:0">${usedIn.map(u => `<a class="chip" href="#/r/${u.id}">🔗 ${esc(u.title)}</a>`).join('')}</div></section>` : '');
+  app.innerHTML = recipeHtml(r, {
+    own: true, parts, chk: checked.get(r.id) || new Set(), partHref: p => '#/r/' + p.id, extraB,
+    hero: r.dishId ? (imgCache.get(r.dishId) || r.thumb || 'data:image/gif;base64,R0lGODlhAQABAAAAACw=') : null,
+    tools: wakePill()
+      + `<button class="pill" id="share">↗︎ Del / eksportér</button>`
+      + `<button class="pill" id="edit">✏️ Rediger</button>`,
+    bottom: `<div class="actions">
+        <button class="btn primary" id="edit2">✏️ Rediger</button>
+        <button class="btn" id="copy">📄 Lav en kopi</button>
+      </div>
+      <div class="delrow"><button class="linkdel" id="del">Slet opskrift</button></div>`
+  });
+  bindRecipeCommon(r.id);
+  $('#share').onclick = () => openShareSheet(r);
+  $('#edit').onclick = $('#edit2').onclick = () => { location.hash = '#/edit/' + r.id; };
   $('#copy').onclick = () => { location.hash = '#/copy/' + r.id; };
   $('#del').onclick = () => deleteRecipe(r, usedIn);
   app.querySelectorAll('[data-tag]').forEach(b => b.onclick = () => { searchEl.value = b.dataset.tag; activeCat = null; lsSet('activeCat', null); listScroll = 0; location.hash = '#/'; });
   app.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { searchEl.value = ''; activeCat = b.dataset.cat; lsSet('activeCat', activeCat); listScroll = 0; location.hash = '#/'; });
-  app.querySelectorAll('.ings li[data-k]').forEach(li => li.onclick = () => {
-    const k = li.dataset.k, s = checked.get(r.id) || new Set();
-    s.has(k) ? s.delete(k) : s.add(k); checked.set(r.id, s); li.classList.toggle('done');
-  });
   if (r.dishId) {
     const hero = $('#hero');
     hero.onclick = () => openLightbox(imgCache.get(r.dishId) || hero.src);
-    loadImage(r.id, r.dishId).then(d => { const el = $('#hero'); if (el && d) el.src = d; });
+    if (!imgCache.has(r.dishId)) loadImage(r.id, r.dishId).then(d => { const el = $('#hero'); if (el && d) el.src = d; });
   }
   origs.forEach(id => loadImage(r.id, id).then(d => { const el = app.querySelector(`img[data-img="${id}"]`); if (el && d) el.src = d; }));
   app.querySelectorAll('.og').forEach(b => b.onclick = async () => openLightbox(await loadImage(r.id, b.dataset.id)));
@@ -730,11 +962,263 @@ async function deleteRecipe(r, usedIn){
       usedIn.forEach(u => b.update(doc(recCol(), u.id), { parts: (u.parts || []).filter(x => x !== r.id) }));
       await w(b.commit());
     }
+    if (r.shareId) deleteDoc(doc(db, 'shared', r.shareId)).catch(() => {});
     await w(deleteDoc(ref));
     location.replace('#/');
     toast('Opskriften er slettet');
   } catch (e) { toast('Fejl: ' + e.message); }
   busy(false);
+}
+
+/* ---------- del / eksportér ---------- */
+function recipeText(r, getPart){
+  const out = [r.title.toUpperCase()];
+  const meta = [r.servings && 'Portioner: ' + r.servings, r.time && 'Tid: ' + r.time].filter(Boolean).join(' · ');
+  if (meta) out.push(meta);
+  const ingBlock = (title, txt) => { const ls = lines(txt); if (!ls.length) return; out.push('', title); ls.forEach(l => out.push(isSub(l) ? '\n' + l : '• ' + l)); };
+  const stepBlock = (title, txt) => { const ls = lines(txt); if (!ls.length) return; out.push('', title); ls.forEach((l, i) => out.push(`${i + 1}. ${l}`)); };
+  const parts = (r.parts || []).map(getPart).filter(Boolean);
+  parts.forEach(p => { ingBlock(`${p.title} – ingredienser:`, p.ingredients); stepBlock(`${p.title} – fremgangsmåde:`, p.steps); });
+  ingBlock(parts.length ? 'Derudover:' : 'Ingredienser:', r.ingredients);
+  stepBlock('Fremgangsmåde:', r.steps);
+  if (r.notes) out.push('', 'Noter:', r.notes);
+  if (r.source) out.push('', 'Kilde: ' + r.source);
+  return out.join('\n');
+}
+
+function openShareSheet(r){
+  openSheet(`<h3 class="sh">Del “${esc(r.title)}”</h3>
+    <div class="opts">
+      <button class="opt" id="oLink"><span class="oi">💬</span><span><b>Send link</b><small>Til Messenger, SMS eller mail – modtageren kan se opskriften og gemme den</small></span></button>
+      <button class="opt" id="oText"><span class="oi">📝</span><span><b>Send som tekst</b><small>Ingredienser og fremgangsmåde som almindelig tekst</small></span></button>
+      <button class="opt" id="oPrint"><span class="oi">🖨️</span><span><b>Udskriv / gem som PDF</b><small>Vælg “Gem som PDF” i udskriftsvinduet</small></span></button>
+      <button class="opt" id="oFile"><span class="oi">💾</span><span><b>Gem som fil</b><small>Med billeder – kan importeres i Mine opskrifter igen</small></span></button>
+    </div>`);
+  $('#oLink').onclick = () => shareLink(r);
+  $('#oText').onclick = async () => {
+    const t = recipeText(r, find);
+    if (navigator.share) { try { await navigator.share({ title: r.title, text: t }); closeSheet(); } catch (e) {} return; }
+    if (await copyText(t)) { closeSheet(); toast('Opskriften er kopieret – indsæt den i Messenger'); }
+  };
+  $('#oPrint').onclick = () => { closeSheet(); printRecipes([r], r.title); };
+  $('#oFile').onclick = () => { closeSheet(); exportFile([r], r.title); };
+}
+
+async function publishShare(r, id){
+  const bundle = await buildBundle([r], 'share');
+  if (JSON.stringify(bundle).length > 950000) bundle.recipes.forEach(x => { x.dish = null; });
+  await w(setDoc(doc(db, 'shared', id), { owner: user.uid, title: r.title, updatedAt: Date.now(), bundle }));
+}
+async function shareLink(r){
+  busy(true, 'Laver link…');
+  let id = r.shareId;
+  try {
+    id = id || doc(collection(db, 'shared')).id;
+    await publishShare(r, id);
+    if (!r.shareId) { r.shareId = id; await w(setDoc(doc(recCol(), r.id), { shareId: id }, { merge: true })); }
+  } catch (e) {
+    busy(false);
+    const rules = String(e.code || e.message).includes('permission');
+    return toast(rules ? 'Deling er ikke slået til – tilføj reglen for "shared" i Firestore' : 'Kunne ikke lave link: ' + e.message);
+  }
+  busy(false);
+  const url = shareUrl(id);
+  openSheet(`<h3 class="sh">Linket er klar 🎉</h3>
+    <p class="muted" style="margin-top:-6px">Alle med linket kan se opskriften og gemme den i deres egne opskrifter. Retter du opskriften, opdateres linket automatisk.</p>
+    <input class="sinput" readonly value="${esc(url)}" id="slink" onfocus="this.select()">
+    <div class="opts" style="margin-top:12px">
+      ${navigator.share ? `<button class="btn primary" id="sNow">💬 Send via Messenger eller andre apps</button>` : ''}
+      <button class="btn ${navigator.share ? '' : 'primary'}" id="sCopy">📋 Kopiér link</button>
+    </div>
+    <div class="delrow" style="margin-top:14px"><button class="linkdel" id="sStop">Stop deling (linket holder op med at virke)</button></div>`);
+  if (navigator.share) $('#sNow').onclick = () => navigator.share({ title: r.title, text: `${r.title} 🍲`, url }).then(closeSheet).catch(() => {});
+  $('#sCopy').onclick = async () => { if (await copyText(url)) toast('Link kopieret – indsæt det i Messenger'); };
+  $('#sStop').onclick = async () => {
+    if (!confirm('Stop deling? Linket holder op med at virke.')) return;
+    try {
+      await w(deleteDoc(doc(db, 'shared', id)));
+      await w(setDoc(doc(recCol(), r.id), { shareId: null }, { merge: true }));
+      closeSheet(); toast('Deling er stoppet');
+    } catch (e) { toast('Fejl: ' + e.message); }
+  };
+}
+
+function openExportSheet(list, title){
+  if (!list.length) return toast('Der er ingen opskrifter at eksportere');
+  openSheet(`<h3 class="sh">Eksportér ${esc(title)}</h3>
+    <p class="muted" style="margin-top:-6px">${plural(list.length, 'opskrift', 'opskrifter')}</p>
+    <div class="opts">
+      <button class="opt" id="ePrint"><span class="oi">🖨️</span><span><b>Udskriv / gem som PDF</b><small>En lille kogebog med indholdsfortegnelse – vælg “Gem som PDF”</small></span></button>
+      <button class="opt" id="eFile"><span class="oi">💾</span><span><b>Gem som fil</b><small>Sikkerhedskopi med billeder, som kan importeres igen</small></span></button>
+    </div>`);
+  $('#ePrint').onclick = () => { closeSheet(); printRecipes(list, title); };
+  $('#eFile').onclick = () => { closeSheet(); exportFile(list, title); };
+}
+
+// Pakker opskrifter (inkl. de opskrifter de består af) til én samlet pakke
+async function buildBundle(mainList, mode){
+  const seen = new Map();
+  const add = r => { if (!r || seen.has(r.id)) return; seen.set(r.id, r); (r.parts || []).forEach(id => add(find(id))); };
+  mainList.forEach(add);
+  const mainIds = new Set(mainList.map(r => r.id));
+  const out = [];
+  for (const r of seen.values()) {
+    let dish = null; const originals = [];
+    if (mode === 'file') {
+      if (r.dishId) dish = await loadImage(r.id, r.dishId);
+      for (const id of r.originalIds || []) { const d = await loadImage(r.id, id); if (d) originals.push(d); }
+    } else if (mainIds.has(r.id) && r.dishId) {
+      const d = await loadImage(r.id, r.dishId);
+      if (d) dish = await compress(d, 1100, .8, 420000);
+    }
+    out.push({
+      key: r.id, title: r.title || '', categories: r.categories || [], parts: r.parts || [],
+      ingredients: r.ingredients || '', steps: r.steps || '', servings: r.servings || '', time: r.time || '',
+      tags: r.tags || [], source: r.source || '', notes: r.notes || '', thumb: r.thumb || null, dish, originals
+    });
+  }
+  const used = new Set(out.flatMap(x => x.categories));
+  return { app: 'mine-opskrifter', v: 1, exportedAt: new Date().toISOString(), main: [...mainIds],
+           categories: categories.filter(c => used.has(c.name)), recipes: out };
+}
+async function exportFile(list, title){
+  busy(true, 'Pakker opskrifter…');
+  try {
+    const bundle = await buildBundle(list, 'file');
+    const name = fileName(title);
+    const blob = new Blob([JSON.stringify(bundle)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 5000);
+    toast('Filen er gemt 💾');
+  } catch (e) { toast('Kunne ikke eksportere: ' + e.message); }
+  busy(false);
+}
+
+function printRecipes(list, title){
+  const ingP = (t, txt) => { const ls = lines(txt); return ls.length ? `<h2>${esc(t)}</h2><ul>${ls.map(l => isSub(l) ? `<li class="psub">${esc(l)}</li>` : `<li>${esc(l)}</li>`).join('')}</ul>` : ''; };
+  const stepP = (t, txt) => { const ls = lines(txt); return ls.length ? `<h2>${esc(t)}</h2><ol>${ls.map(l => `<li>${esc(l)}</li>`).join('')}</ol>` : ''; };
+  const one = r => {
+    const parts = (r.parts || []).map(find).filter(Boolean);
+    const meta = [(r.categories || []).join(', '), r.servings && 'Portioner: ' + r.servings, r.time && 'Tid: ' + r.time].filter(Boolean).join('  ·  ');
+    const a = parts.map(p => ingP(p.title, p.ingredients)).join('') + ingP(parts.length ? 'Derudover' : 'Ingredienser', r.ingredients);
+    const b = parts.map(p => stepP('Fremgangsmåde – ' + p.title, p.steps)).join('') + stepP('Fremgangsmåde', r.steps);
+    return `<section class="prec">${r.thumb ? `<img class="pimg" src="${r.thumb}" alt="">` : ''}
+      <h1>${esc(r.title)}</h1>${meta ? `<p class="pmeta">${esc(meta)}</p>` : ''}
+      <div class="pcols"><div>${a}</div><div>${b}</div></div>
+      ${r.notes ? `<h2>Noter</h2><p class="pnotes">${esc(r.notes)}</p>` : ''}
+      ${r.source ? `<p class="pmeta">Kilde: ${esc(r.source)}</p>` : ''}</section>`;
+  };
+  const cover = list.length > 1 ? `<section class="prec pcover"><h1>${esc(title)}</h1>
+      <p class="pmeta">${plural(list.length, 'opskrift', 'opskrifter')} · Mine opskrifter</p>
+      <ol class="toc">${list.map(r => `<li>${esc(r.title)}</li>`).join('')}</ol></section>` : '';
+  $('#print').innerHTML = cover + list.map(one).join('');
+  const prevTitle = document.title;
+  document.title = title;   // bliver filnavnet, når man gemmer som PDF
+  setTimeout(() => { window.print(); }, 300);
+  const done = () => { document.title = prevTitle; $('#print').innerHTML = ''; window.removeEventListener('afterprint', done); };
+  window.addEventListener('afterprint', done);
+}
+
+/* ---------- import ---------- */
+async function importBundle(bundle){
+  if (!bundle || bundle.app !== 'mine-opskrifter' || !Array.isArray(bundle.recipes)) throw new Error('Filen er ikke fra Mine opskrifter');
+  const map = {}; const toWrite = [];
+  for (const x of bundle.recipes) {
+    const dup = recipes.find(r => norm(r.title) === norm(x.title) && norm(r.ingredients) === norm(x.ingredients) && norm(r.steps) === norm(x.steps));
+    if (dup) { map[x.key] = dup.id; continue; }
+    map[x.key] = doc(recCol()).id; toWrite.push(x);
+  }
+  // kategorier: brug eksisterende navne, tilføj nye
+  const catName = n => (categories.find(c => norm(c.name) === norm(n)) || {}).name;
+  const newCats = [];
+  for (const x of toWrite) for (const n of x.categories || []) {
+    if (!catName(n) && !newCats.some(c => norm(c.name) === norm(n))) {
+      newCats.push({ name: n, emoji: ((bundle.categories || []).find(c => norm(c.name) === norm(n)) || {}).emoji || '🍴' });
+    }
+  }
+  if (newCats.length) await saveCats([...categories, ...newCats]);
+  for (const x of toWrite) {
+    const ref = doc(recCol(), map[x.key]);
+    const put = async (data, kind) => {
+      const iref = doc(collection(ref, 'images'));
+      await w(setDoc(iref, { data, kind, createdAt: Date.now() }));
+      imgCache.set(iref.id, data);
+      return iref.id;
+    };
+    const dishId = x.dish ? await put(x.dish, 'dish') : null;
+    const originalIds = [];
+    for (const o of x.originals || []) originalIds.push(await put(o, 'original'));
+    let thumb = x.thumb || null;
+    if (!thumb && (x.dish || (x.originals || [])[0])) thumb = await compress(x.dish || x.originals[0], 420, .72, 80000);
+    await w(setDoc(ref, {
+      title: x.title || 'Uden navn', categories: (x.categories || []).map(n => catName(n) || n),
+      parts: (x.parts || []).map(k => map[k]).filter(Boolean),
+      ingredients: x.ingredients || '', steps: x.steps || '', servings: x.servings || '', time: x.time || '',
+      tags: x.tags || [], source: x.source || '', notes: x.notes || '',
+      dishId, originalIds, thumb, shareId: null, createdAt: Date.now(), updatedAt: Date.now()
+    }));
+  }
+  return { map, added: toWrite.length, skipped: bundle.recipes.length - toWrite.length };
+}
+$('#impfile').addEventListener('change', async () => {
+  const f = $('#impfile').files[0]; if (!f) return;
+  let bundle;
+  try { bundle = JSON.parse(await f.text()); } catch (e) { return toast('Filen kunne ikke læses'); }
+  const n = bundle?.recipes?.length || 0;
+  if (!n || bundle.app !== 'mine-opskrifter') return toast('Filen er ikke fra Mine opskrifter');
+  if (!confirm(`Importér ${plural(n, 'opskrift', 'opskrifter')} fra filen?`)) return;
+  closeSheet(); busy(true, 'Importerer…');
+  try {
+    const res = await importBundle(bundle);
+    toast(`${plural(res.added, 'opskrift', 'opskrifter')} importeret` + (res.skipped ? ` · ${res.skipped} fandtes allerede` : ''));
+  } catch (e) { toast('Import fejlede: ' + e.message); }
+  busy(false);
+});
+
+/* ---------- delt opskrift (åbnet fra et link) ---------- */
+const waitLoaded = () => new Promise(res => { const t0 = Date.now(); const tick = () => (user && loaded) || Date.now() - t0 > 8000 ? res() : setTimeout(tick, 100); tick(); });
+async function renderShared(id){
+  let s = sharedCache.get(id);
+  if (s === undefined) {
+    app.innerHTML = '<p class="muted">Henter opskriften…</p>';
+    try { const snap = await getDoc(doc(db, 'shared', id)); s = snap.exists() ? snap.data() : null; }
+    catch (e) { s = null; }
+    sharedCache.set(id, s);
+    if (route() !== '#/s/' + id) return;
+  }
+  const b = s?.bundle;
+  const main = b?.recipes?.find(x => x.key === b.main?.[0]);
+  if (!main) {
+    app.innerHTML = `<div class="empty"><div class="big">🤷</div><h3>Opskriften findes ikke længere</h3><p>Linket er måske blevet slået fra af den, der delte det.</p>
+      <p><a class="btn primary" href="#/" style="display:inline-block;text-decoration:none">Til Mine opskrifter</a></p></div>`;
+    return;
+  }
+  const parts = (main.parts || []).map(k => b.recipes.find(x => x.key === k)).filter(Boolean);
+  const mine = user && s.owner === user.uid;
+  const top = `<div class="sharetop"><div class="st"><b>📩 ${mine ? 'Sådan ser din delte opskrift ud' : 'En opskrift er delt med dig'}</b>
+      <span class="muted">${mine ? 'Alle med linket kan se den.' : 'Gem den, så har du den altid i Mine opskrifter.'}</span></div>
+      ${mine ? (find(main.key) ? `<a class="btn sm" href="#/r/${main.key}" style="text-decoration:none">Åbn min opskrift</a>` : '')
+             : `<button class="btn primary sm" id="sSave">＋ Gem i mine opskrifter</button>`}</div>`;
+  app.innerHTML = recipeHtml(main, {
+    own: false, parts, chk: checked.get('s' + id) || new Set(), partHref: null, top,
+    hero: main.dish || main.thumb || null, tools: wakePill()
+  });
+  bindRecipeCommon('s' + id);
+  const hero = $('#hero'); if (hero) hero.onclick = () => openLightbox(hero.src);
+  const sv = $('#sSave');
+  if (sv) sv.onclick = async () => {
+    if (!user) { if (!(await googleLogin())) return; }
+    busy(true, 'Gemmer…');
+    await waitLoaded();
+    try {
+      const res = await importBundle(b);
+      busy(false);
+      toast(res.added ? 'Gemt i dine opskrifter ✓' : 'Du har allerede denne opskrift');
+      location.hash = '#/r/' + res.map[main.key];
+    } catch (e) { busy(false); toast('Kunne ikke gemme: ' + e.message); }
+  };
 }
 
 /* ---------- tilføj / rediger / kopiér ---------- */
@@ -750,10 +1234,11 @@ async function startCopy(r){
 }
 
 function renderEdit(r, prefill = null, imgs = null){
-  editBuiltFor = route();
+  editBuiltFor = editRoute = route();
+  dirtyBase = null;
   const src = r || prefill || {};
   ed = {
-    r,
+    r, fromId: prefill?.id || null,
     dish: imgs ? imgs.dish : (r?.dishId ? { id: r.dishId, existing: true } : null),
     originals: imgs ? imgs.originals : (r?.originalIds || []).map(id => ({ id, existing: true })),
     removed: [],
@@ -779,8 +1264,8 @@ function renderEdit(r, prefill = null, imgs = null){
     <div class="box"><div id="partsbox" class="partlist"></div>
       <div class="imgrow"><button type="button" class="btn" id="addpart">🔗 Tilføj en af mine opskrifter</button></div></div>
 
-    <label for="fi">Ingredienser <span class="help">– én pr. linje. Skriv "Fyld:" for en overskrift</span></label>
-    <textarea id="fi" placeholder="250 g smør&#10;2 æg&#10;Fyld:&#10;100 g remonce"></textarea>
+    <label for="fi">Ingredienser <span class="help">– én pr. linje</span></label>
+    <textarea id="fi" placeholder="250 g smør&#10;2 æg&#10;100 g sukker"></textarea>
 
     <label for="fs">Fremgangsmåde <span class="help">– ét trin pr. linje</span></label>
     <textarea id="fs" placeholder="Rul bløddejen ud…&#10;Fordel makronmassen…"></textarea>
@@ -811,15 +1296,31 @@ function renderEdit(r, prefill = null, imgs = null){
       <button type="submit" class="btn primary">Gem opskrift</button>
     </div>
   </form>`;
-  $('#ft').value = src.title || ''; $('#fi').value = src.ingredients || ''; $('#fs').value = src.steps || '';
-  $('#fp').value = src.servings || ''; $('#fz').value = src.time || ''; $('#fg').value = (src.tags || []).join(', ');
-  $('#fq').value = src.source || ''; $('#fn').value = src.notes || '';
+  const fill = F => { $('#ft').value = F.t || ''; $('#fi').value = F.i || ''; $('#fs').value = F.s || ''; $('#fp').value = F.p || '';
+    $('#fz').value = F.z || ''; $('#fg').value = F.g || ''; $('#fq').value = F.q || ''; $('#fn').value = F.n || ''; };
+  fill({ t: src.title, i: src.ingredients, s: src.steps, p: src.servings, z: src.time, g: (src.tags || []).join(', '), q: src.source, n: src.notes });
   app.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => pick(b.dataset.pick, !!b.dataset.cam));
   $('#addpart').onclick = openPartPicker;
-  $('#cancel').onclick = () => { editBuiltFor = null; location.hash = r ? '#/r/' + r.id : (prefill ? '#/r/' + prefill.id : '#/'); };
+  $('#cancel').onclick = () => leaveEdit(r ? '#/r/' + r.id : (prefill ? '#/r/' + prefill.id : '#/'));
   $('#f').onsubmit = e => { e.preventDefault(); save(); };
+  $('#f').addEventListener('input', markChanged);
   drawCats(); drawParts(); drawEditImgs();
-  if (!r && !prefill) setTimeout(() => $('#ft')?.focus(), 50);
+  // En kopi tæller altid som "ikke gemt"
+  dirtyBase = prefill ? 'kopi' : edState();
+
+  const d = pendingDraft;
+  if (d && d.route === editRoute) {
+    pendingDraft = null;
+    fill(d.f || {});
+    ed.cats = d.cats || [];
+    ed.parts = (d.parts || []).filter(id => find(id));
+    ed.dish = d.dish || null;
+    ed.originals = d.originals || [];
+    ed.removed = d.removed || [];
+    if (d.fromId) ed.fromId = d.fromId;
+    drawCats(); drawParts(); drawEditImgs();
+    if (d.lostImgs) toast('Nye billeder kom ikke med i kladden – tilføj dem igen');
+  } else if (!r && !prefill) setTimeout(() => $('#ft')?.focus(), 50);
 }
 
 function drawCats(){
@@ -831,7 +1332,7 @@ function drawCats(){
   box.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => {
     const n = b.dataset.cat;
     ed.cats = ed.cats.includes(n) ? ed.cats.filter(x => x !== n) : [...ed.cats, n];
-    drawCats();
+    drawCats(); markChanged();
   });
   $('#newcat').onclick = async () => {
     const name = (prompt('Navn på ny kategori') || '').trim();
@@ -840,7 +1341,7 @@ function drawCats(){
     if (!exist) await saveCats([...categories, { name, emoji: '🍴' }]);
     const n = exist ? exist.name : name;
     if (!ed.cats.includes(n)) ed.cats.push(n);
-    drawCats();
+    drawCats(); markChanged();
   };
 }
 
@@ -849,7 +1350,7 @@ function drawParts(){
   box.innerHTML = ed.parts.map(find).filter(Boolean).map(p =>
     `<div class="prow">${thumbHtml(p)}<span class="pt">${esc(p.title)}<small>${nIng(lines(p.ingredients))} ingredienser</small></span>
      <button type="button" class="x" data-rmp="${p.id}" aria-label="Fjern">✕</button></div>`).join('');
-  box.querySelectorAll('[data-rmp]').forEach(b => b.onclick = () => { ed.parts = ed.parts.filter(x => x !== b.dataset.rmp); drawParts(); });
+  box.querySelectorAll('[data-rmp]').forEach(b => b.onclick = () => { ed.parts = ed.parts.filter(x => x !== b.dataset.rmp); drawParts(); markChanged(); });
 }
 
 function openPartPicker(){
@@ -863,7 +1364,7 @@ function openPartPicker(){
     $('#plist').innerHTML = list.length
       ? list.map(x => `<button type="button" class="prow" data-id="${x.id}">${thumbHtml(x)}<span class="pt">${esc(x.title)}<small>${esc((x.categories || []).join(', '))}</small></span><span class="plus">＋</span></button>`).join('')
       : `<p class="muted">${q ? 'Ingen opskrifter fundet.' : 'Gem først de opskrifter, du vil bygge på – fx bløddej og makronmasse – så kan du vælge dem her.'}</p>`;
-    $('#plist').querySelectorAll('[data-id]').forEach(b => b.onclick = () => { ed.parts.push(b.dataset.id); closeSheet(); drawParts(); });
+    $('#plist').querySelectorAll('[data-id]').forEach(b => b.onclick = () => { ed.parts.push(b.dataset.id); closeSheet(); drawParts(); markChanged(); });
   };
   $('#pq').oninput = draw;
   draw();
@@ -876,7 +1377,7 @@ function drawEditImgs(){
   if (ed.dish) {
     const set = d => { const el = $('#dishimg'); if (el && d) el.src = d; };
     ed.dish.data ? set(ed.dish.data) : loadImage(rid, ed.dish.id).then(set);
-    $('#rmdish').onclick = () => { if (ed.dish.existing) ed.removed.push(ed.dish.id); ed.dish = null; drawEditImgs(); };
+    $('#rmdish').onclick = () => { if (ed.dish.existing) ed.removed.push(ed.dish.id); ed.dish = null; drawEditImgs(); markChanged(); };
   }
   const og = $('#origbox');
   og.innerHTML = ed.originals.map((o, i) => `<div class="ph"><img data-oi="${i}" alt=""><button type="button" class="rm-x" data-rm="${i}" aria-label="Fjern">✕</button></div>`).join('');
@@ -887,7 +1388,7 @@ function drawEditImgs(){
   og.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => {
     const o = ed.originals.splice(+b.dataset.rm, 1)[0];
     if (o.existing) ed.removed.push(o.id);
-    drawEditImgs();
+    drawEditImgs(); markChanged();
   });
 }
 
@@ -913,7 +1414,7 @@ $('#file').addEventListener('change', async () => {
         ed.originals.push({ data: await compress(f, 2200) });   // højere opløsning så teksten kan læses
       }
     }
-    drawEditImgs();
+    drawEditImgs(); markChanged();
   } catch (e) { toast(e.message); }
   busy(false);
 });
@@ -954,12 +1455,16 @@ async function save(){
       source: $('#fq').value.trim(),
       notes: $('#fn').value.trim(),
       dishId, originalIds, thumb,
+      shareId: r?.shareId || null,
       createdAt: r?.createdAt || Date.now(),
       updatedAt: Date.now()
     };
     await w(setDoc(ref, data));
     for (const id of ed.removed) { w(deleteDoc(doc(ref, 'images', id))).catch(() => {}); imgCache.delete(id); }
-    editBuiltFor = null;
+    // Er opskriften delt, opdateres linket med det samme
+    if (data.shareId) publishShare({ id: ref.id, ...data }, data.shareId).catch(() => {});
+    clearDraft();
+    editRoute = null; editBuiltFor = null;
     location.replace('#/r/' + ref.id);
     toast(navigator.onLine ? 'Gemt ✓' : 'Gemt – synkroniseres når du er online');
   } catch (e) {
@@ -977,9 +1482,9 @@ try {
   db = initializeFirestore(fb, {});
 }
 getRedirectResult(auth).catch(err => toast(authErr(err)));
-const onEditView = () => /^#\/(new|edit\/|copy\/)/.test(route()) && editBuiltFor === route();
+const onEditView = () => !!editRoute && editBuiltFor === route();
 onAuthStateChanged(auth, u => {
-  user = u; authReady = true; loaded = false;
+  user = u; authReady = true; loaded = false; draftChecked = false;
   if (unsub) { unsub(); unsub = null; }
   if (setUnsub) { setUnsub(); setUnsub = null; }
   recipes = []; categories = [];
@@ -990,6 +1495,7 @@ onAuthStateChanged(auth, u => {
       loaded = true;
       if (onEditView()) drawParts(); else render();
       if (sheetRefresh) sheetRefresh();
+      checkDraft();
     }, err => { loaded = true; toast('Databasefejl: ' + err.message); render(); });
     setUnsub = onSnapshot(setRef(), snap => {
       if (snap.exists()) categories = snap.data().categories || [];

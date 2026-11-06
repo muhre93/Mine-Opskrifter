@@ -1,6 +1,6 @@
 // Service worker for "Mine opskrifter" – gør appen installerbar og lader den åbne uden net.
 // Hæv versionsnummeret, hvis du vil tvinge telefonerne til at hente alt på ny.
-const CACHE = 'mine-opskrifter-v2';
+const CACHE = 'mine-opskrifter-v3';
 const SHELL = [
   './',
   './index.html',
