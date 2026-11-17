@@ -238,6 +238,25 @@ section>h3 small{font-family:var(--sans);font-size:13px;font-weight:600;color:va
   animation:up .22s ease-out}
 @keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
 .grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:4px auto 10px}
+.pop{position:absolute;z-index:45;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 36px rgba(40,20,10,.18);padding:6px;min-width:250px;animation:fadein .12s ease-out}
+.pop button{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:10px 12px;border-radius:10px;cursor:pointer;text-align:left;font-weight:600;font-size:15px}
+.pop button:hover{background:var(--chip)}
+.pop button.sel{color:var(--accent)}
+.pop .ck{margin-left:auto;font-weight:700}
+@keyframes fadein{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.sx{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:0;background:var(--chip);color:var(--muted);font-size:14px;cursor:pointer;display:none}
+@media (min-width:760px) and (hover:hover) and (pointer:fine){
+  #sheet .panel{left:50%;top:50%;right:auto;bottom:auto;width:min(560px,92vw);max-height:84vh;border-radius:24px;
+    padding:22px 24px 24px;transform:translate(-50%,-50%);animation:popin .18s ease-out;box-shadow:0 24px 70px rgba(0,0,0,.28)}
+  #sheet .grab{display:none}
+  .sx{display:grid;place-items:center}
+  .sh{padding-right:40px}
+}
+@keyframes popin{from{opacity:0;transform:translate(-50%,-47%)}to{opacity:1;transform:translate(-50%,-50%)}}
+.aierr details{margin-top:12px;font-size:13px;color:var(--muted)}
+.aierr code{display:block;white-space:pre-wrap;word-break:break-word;background:var(--chip);border-radius:10px;padding:10px;margin-top:6px;font-size:12px}
+.grecaptcha-badge{visibility:hidden}
+
 .sh{font-size:22px;margin:6px 0 12px}
 .sh2{font-size:17px;margin:22px 0 8px}
 .opts{display:grid;gap:8px}
@@ -306,6 +325,7 @@ section>h3 small{font-family:var(--sans);font-size:13px;font-weight:600;color:va
 <header>
   <div class="bar">
     <button id="back" class="icon" aria-label="Tilbage" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button id="home" class="icon" aria-label="Til forsiden" title="Til forsiden" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg></button>
     <h1 id="htitle">Mine opskrifter</h1>
     <button id="gear" class="icon" aria-label="Indstillinger" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
   </div>
@@ -320,7 +340,7 @@ section>h3 small{font-family:var(--sans);font-size:13px;font-weight:600;color:va
 <input type="file" id="file" accept="image/*" hidden>
 <input type="file" id="impfile" accept=".json,application/json" hidden>
 <input type="file" id="scanfile" accept="image/*" multiple hidden>
-<div id="sheet" hidden><div class="bg"></div><div class="panel"><div class="grab"></div><div id="sheetbody"></div></div></div>
+<div id="sheet" hidden><div class="bg"></div><div class="panel"><div class="grab"></div><button class="sx" data-close aria-label="Luk">✕</button><div id="sheetbody"></div></div></div>
 <div id="lightbox" hidden><img alt=""><button class="close" aria-label="Luk">✕</button></div>
 <div id="busy" hidden>Gemmer…</div>
 <div id="toast"></div>
@@ -338,6 +358,9 @@ const firebaseConfig = {
   messagingSenderId: "807564113966",
   appId: "1:807564113966:web:0d437102ea4c4fd08407bf"
 };
+/* Valgfrit: reCAPTCHA v3 "site key" til Firebase App Check.
+   Lad den stå tom, indtil du har oprettet nøglen (se vejledningen). */
+const RECAPTCHA_SITE_KEY = '';
 /* ============================================================ */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -412,7 +435,8 @@ async function copyText(t){
 function openSheet(html){ $('#sheetbody').innerHTML = html; $('#sheet').hidden = false; document.body.style.overflow = 'hidden'; }
 function closeSheet(){ $('#sheet').hidden = true; document.body.style.overflow = ''; sheetRefresh = null; }
 $('#sheet .bg').onclick = closeSheet;
-$('#sheetbody').addEventListener('click', e => { if (e.target.closest('[data-close]')) closeSheet(); });
+$('#sheet .panel').addEventListener('click', e => { if (e.target.closest('[data-close]')) closeSheet(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePopover(); if (!$('#sheet').hidden) closeSheet(); } });
 
 /* ---------- læg på hjemmeskærm ---------- */
 const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
@@ -529,19 +553,30 @@ const wakePill = () => `<button class="pill" id="wake"><span class="sw"></span><
 function chrome(view, title = 'Mine opskrifter'){
   document.body.className = 'v-' + view;
   $('#back').hidden = !['detail', 'edit', 'shared'].includes(view) || (view === 'shared' && !user);
+  $('#home').hidden = $('#back').hidden;
   $('#gear').hidden = !user || !['list', 'detail'].includes(view);
   $('#hsub').hidden = view !== 'list';
   $('#searchwrap').hidden = view !== 'list';
   $('#fab').hidden = view !== 'list';
   $('#htitle').textContent = title;
 }
+/* Tilbage går ét skridt tilbage i appen – fx fra Lux Bløddej tilbage til Kaffebrød.
+   Hver side husker, hvor dybt man er (history.state.d), så vi ved, om der er et skridt at gå tilbage til. */
+let navDepth = 1, keepDepth = false;
+function syncDepth(){
+  const d = history.state && history.state.d;
+  if (keepDepth) { keepDepth = false; history.replaceState({ d: navDepth }, ''); return; }
+  if (d) navDepth = d;
+  else { navDepth += 1; history.replaceState({ d: navDepth }, ''); }
+}
+function replaceRoute(h){ keepDepth = true; location.replace(h); }
+function goBack(fallback){ if (navDepth > 1) history.back(); else location.hash = fallback; }
 $('#back').onclick = () => {
   const h = route(); let m;
-  if (h === '#/new') leaveEdit('#/');
-  else if ((m = h.match(/^#\/edit\/(.+)$/))) leaveEdit('#/r/' + m[1]);
-  else if ((m = h.match(/^#\/copy\/(.+)$/))) leaveEdit('#/r/' + m[1]);
-  else location.hash = '#/';
+  const fallback = (m = h.match(/^#\/(edit|copy)\/(.+)$/)) ? '#/r/' + m[2] : '#/';
+  if (editRoute) leaveEdit(fallback, true); else goBack(fallback);
 };
+$('#home').onclick = () => { if (editRoute) leaveEdit('#/'); else location.hash = '#/'; };
 $('#fab').onclick = () => { location.hash = '#/new'; };
 $('#gear').onclick = () => openSettings();
 searchEl.addEventListener('input', () => { if (route() === '#/') renderList(); });
@@ -588,8 +623,8 @@ function askUnsaved(discard){
   $('#uKeep').onclick = closeSheet;
   $('#uDrop').onclick = () => { closeSheet(); clearDraft(); discard(); };
 }
-function leaveEdit(target){
-  const go = () => { allowLeave = true; clearDraft(); location.hash = target; };
+function leaveEdit(target, back = false){
+  const go = () => { allowLeave = true; clearDraft(); back ? goBack(target) : (location.hash = target); };
   if (isDirty()) askUnsaved(go); else go();
 }
 window.addEventListener('beforeunload', e => {
@@ -649,12 +684,14 @@ window.addEventListener('hashchange', () => {
   const h = route();
   // Er man ved at forlade en opskrift, der ikke er gemt (fx med telefonens tilbage-knap)?
   if (!allowLeave && editRoute && h !== editRoute && isDirty()) {
-    history.pushState(null, '', editRoute);
+    history.pushState({ d: navDepth }, '', editRoute);
     askUnsaved(() => { allowLeave = true; history.back(); });
     return;
   }
   if (editRoute && h !== editRoute) clearDraft();
   allowLeave = false;
+  syncDepth();
+  closePopover();
   if (lastRoute === '#/') listScroll = window.scrollY;
   if (!/^#\/(r|s)\//.test(h)) stopWake();
   closeSheet();
@@ -713,15 +750,42 @@ function sortList(res){
   if (key) res.sort((a, b) => key(b.r) - key(a.r));   // listen er allerede A–Å, så lige stillede står alfabetisk
   return res;
 }
-function openSortSheet(){
+const isDesk = () => matchMedia('(min-width:760px) and (hover:hover) and (pointer:fine)').matches;
+const SORT_ICONS = { az: '🔤', new: '🆕', upd: '✏️', open: '🕘' };
+function openSortSheet(e){
+  const pick = k => { sortBy = k; lsSet('sort', sortBy); closePopover(); closeSheet(); renderList(); };
+  if (isDesk() && e?.currentTarget) {
+    // Computer: lille menu lige under knappen
+    if ($('#pop')) return closePopover();
+    openPopover(e.currentTarget, Object.entries(SORTS).map(([k, v]) =>
+      `<button class="${k === sortBy ? 'sel' : ''}" data-sort="${k}"><span>${SORT_ICONS[k]}</span>${v}${k === sortBy ? '<span class="ck">✓</span>' : ''}</button>`).join(''));
+    $('#pop').querySelectorAll('[data-sort]').forEach(b => b.onclick = () => pick(b.dataset.sort));
+    return;
+  }
   openSheet(`<h3 class="sh">Sortér opskrifter</h3>
     <div class="opts">${Object.entries(SORTS).map(([k, v]) =>
-      `<button class="opt ${k === sortBy ? 'sel' : ''}" data-sort="${k}"><span class="oi">${{ az: '🔤', new: '🆕', upd: '✏️', open: '🕘' }[k]}</span>
+      `<button class="opt ${k === sortBy ? 'sel' : ''}" data-sort="${k}"><span class="oi">${SORT_ICONS[k]}</span>
         <span style="flex:1"><b>${v}</b>${k === 'open' ? '<small>De opskrifter du sidst har kigget på</small>' : ''}</span>${k === sortBy ? '<span class="plus">✓</span>' : ''}</button>`).join('')}</div>`);
-  $('#sheetbody').querySelectorAll('[data-sort]').forEach(b => b.onclick = () => {
-    sortBy = b.dataset.sort; lsSet('sort', sortBy); closeSheet(); renderList();
-  });
+  $('#sheetbody').querySelectorAll('[data-sort]').forEach(b => b.onclick = () => pick(b.dataset.sort));
 }
+function openPopover(anchor, html){
+  closePopover();
+  const p = document.createElement('div');
+  p.id = 'pop'; p.className = 'pop'; p.innerHTML = html;
+  document.body.appendChild(p);
+  const r = anchor.getBoundingClientRect();
+  const maxLeft = document.documentElement.clientWidth - p.offsetWidth - 12;
+  p.style.top = (r.bottom + window.scrollY + 8) + 'px';
+  p.style.left = (Math.max(12, Math.min(r.right - p.offsetWidth, maxLeft)) + window.scrollX) + 'px';
+  setTimeout(() => document.addEventListener('pointerdown', popOutside, true), 0);
+}
+function popOutside(e){
+  if (e.target.closest('#pop')) return;
+  if (e.target.closest('#sortbtn')) { e.stopPropagation(); }
+  closePopover();
+  if (e.target.closest('#sortbtn')) { const b = e.target.closest('#sortbtn'); b.dataset.skip = '1'; setTimeout(() => delete b.dataset.skip, 400); }
+}
+function closePopover(){ const p = document.getElementById('pop'); if (p) p.remove(); document.removeEventListener('pointerdown', popOutside, true); }
 function renderList(){
   const terms = norm(searchEl.value.trim()).split(/\s+/).filter(Boolean);
   if (activeCat && activeCat !== FAV && categories.length && !categories.some(c => c.name === activeCat)) { activeCat = null; lsSet('activeCat', null); }
@@ -797,7 +861,7 @@ function renderList(){
   });
   $('#editcats').onclick = openSettings;
   const ex = $('#exp'); if (ex) ex.onclick = () => openExportSheet(res.map(x => x.r), catLabel || (terms.length ? 'Søgeresultat' : 'Alle opskrifter'));
-  const sb = $('#sortbtn'); if (sb) sb.onclick = openSortSheet;
+  const sb = $('#sortbtn'); if (sb) sb.onclick = e => { if (sb.dataset.skip) return; openSortSheet(e); };
   const bi = $('#bInst'); if (bi) bi.onclick = install;
   const bx = $('#bX'); if (bx) bx.onclick = () => { lsSet('installDismissed', '1'); renderList(); };
 }
@@ -846,6 +910,7 @@ function openSettings(){
       <button class="btn" style="width:100%" id="sInst">📲 Læg appen på hjemmeskærmen</button>
       <h3 class="sh2">Konto</h3>
       <p class="muted" style="margin:0 0 8px">Logget ind som ${esc(user?.email)}</p>
+      ${RECAPTCHA_SITE_KEY ? '<p class="muted" style="font-size:12px;margin:-2px 0 8px">Beskyttet af reCAPTCHA – Googles <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">privatlivspolitik</a> og <a href="https://policies.google.com/terms" target="_blank" rel="noopener">vilkår</a> gælder.</p>' : ''}
       <button class="btn danger" style="width:100%" id="sOut">Log ud</button>`;
     $('#catadd').onsubmit = async e => {
       e.preventDefault();
@@ -1013,7 +1078,7 @@ async function deleteRecipe(r, usedIn){
     }
     if (r.shareId) deleteDoc(doc(db, 'shared', r.shareId)).catch(() => {});
     await w(deleteDoc(ref));
-    location.replace('#/');
+    replaceRoute('#/');
     toast('Opskriften er slettet');
   } catch (e) { toast('Fejl: ' + e.message); }
   busy(false);
@@ -1271,14 +1336,36 @@ async function aiExtract({ images = [], text = '' }){
     tags: arr(x.tags).map(t => t.toLocaleLowerCase('da').replace(/^#/, ''))
   })).filter(x => x.title || x.ingredients || x.steps);
 }
-function aiErr(e){
-  const m = String((e && (e.code || '')) + ' ' + (e && e.message || e));
-  if (/api[-_ ]?not[-_ ]?enabled|firebasevertexai|firebaseml|SERVICE_DISABLED|has not been used|PERMISSION_DENIED|403/i.test(m))
-    return 'Scanning er ikke slået til endnu – slå Firebase AI Logic til i Firebase-konsollen';
-  if (/quota|429|RESOURCE_EXHAUSTED/i.test(m)) return 'Dagens gratis forbrug er brugt op – prøv igen senere';
-  if (/fetch|network|Failed to load|import/i.test(m) && !navigator.onLine) return 'Scanning kræver internet';
-  if (e instanceof SyntaxError) return 'Gemini svarede uklart – prøv et skarpere billede';
-  return 'Kunne ikke læse opskriften: ' + (e?.message || e);
+function aiErrInfo(e){
+  const raw = String(((e && e.code) || '') + ' ' + ((e && e.message) || e)).trim();
+  const stop = true;
+  if (!navigator.onLine) return { stop, title: 'Ingen internetforbindelse', text: 'Scanning kræver internet. Prøv igen, når du er online.', raw };
+  if (/app[\s_-]?check|UNAUTHENTICATED|\b401\b/i.test(raw))
+    return { stop, title: 'App Check blokerer scanningen', raw,
+      text: 'Firebase App Check står på <b>Enforced</b> for Firebase AI Logic, så Gemini afviser appen.<br><br>Gå til Firebase-konsollen → <b>App Check</b> → fanen <b>APIs</b> → <b>Firebase AI Logic</b> og vælg <b>Unenforce</b>. Det kan tage et par minutter, før det virker.' };
+  if (/quota|\b429\b|RESOURCE_EXHAUSTED/i.test(raw))
+    return { stop, title: 'Dagens gratis forbrug er brugt', text: 'Gemini har et dagligt loft på den gratis plan. Prøv igen senere – typisk i morgen.', raw };
+  if (/api[-_ ]?not[-_ ]?enabled|SERVICE_DISABLED|has not been used|firebasevertexai|generativelanguage|firebaseml/i.test(raw))
+    return { stop, title: 'Firebase AI Logic er ikke slået til', raw,
+      text: 'Gå til Firebase-konsollen → <b>AI Logic</b> → <b>Get started</b>, og vælg <b>Gemini Developer API</b>.' };
+  if (/\b403\b|PERMISSION_DENIED|forbidden/i.test(raw))
+    return { stop, title: 'Gemini afviste forespørgslen', raw,
+      text: 'Tjek i Firebase-konsollen:<br>• <b>App Check → APIs → Firebase AI Logic</b> må ikke stå på <b>Enforced</b> (vælg <b>Unenforce</b>).<br>• <b>AI Logic</b> skal være slået til med <b>Gemini Developer API</b>.' };
+  if (/\b404\b|not found|is not supported|NOT_FOUND/i.test(raw))
+    return { stop, title: 'Gemini-modellen blev ikke fundet', raw,
+      text: `Modellen <b>${esc(AI_MODEL)}</b> svarede ikke. Den kan være udskiftet – sig til, så retter jeg den.` };
+  if (/Failed to fetch|NetworkError|dynamically imported/i.test(raw))
+    return { stop, title: 'Kunne ikke forbinde til Gemini', text: 'Tjek din internetforbindelse og prøv igen.', raw };
+  if (e instanceof SyntaxError)
+    return { stop: false, title: 'Gemini svarede uklart', text: 'Prøv igen, gerne med et skarpere eller lysere billede.', raw };
+  return { stop: false, title: 'Kunne ikke læse opskriften', text: 'Noget gik galt. Prøv igen om lidt.', raw };
+}
+function showAiError(e){
+  const i = aiErrInfo(e);
+  console.warn('Scanning fejlede:', e);
+  openSheet(`<div class="aierr"><h3 class="sh">${i.title}</h3><p>${i.text}</p>
+    <details><summary>Teknisk fejlbesked</summary><code>${esc(i.raw)}</code></details></div>
+    <button class="btn primary" style="width:100%;margin-top:16px" data-close>Forstået</button>`);
 }
 let scanTarget = 'form';
 function pickScan(target, camera){
@@ -1303,7 +1390,7 @@ $('#scanfile').addEventListener('change', async () => {
     busy(false);
     if (!found.length) return toast('Jeg kunne ikke finde en opskrift på billedet – prøv et skarpere foto');
     applyScan(found[0], imgs, found.length);
-  } catch (e) { busy(false); toast(aiErr(e)); }
+  } catch (e) { busy(false); showAiError(e); }
 });
 function applyScan(x, imgs, total){
   const f = formFields();
@@ -1332,7 +1419,7 @@ function openTextScan(){
       busy(false);
       if (!found.length) return toast('Jeg kunne ikke finde en opskrift i teksten');
       applyScan(found[0], [], found.length);
-    } catch (e) { busy(false); toast(aiErr(e)); }
+    } catch (e) { busy(false); showAiError(e); }
   };
 }
 function openBulkScan(){
@@ -1356,11 +1443,11 @@ async function bulkScan(files){
       found.forEach((x, k) => made.push({ id: res.map['scan' + i + '_' + k], title: x.title || 'Uden navn' }));
     } catch (e) {
       failed++; lastErr = e;
-      if (/ikke slået til|forbrug|internet/.test(aiErr(e))) break;   // nytter ikke at prøve de næste
+      if (aiErrInfo(e).stop) break;   // nytter ikke at prøve de næste billeder
     }
   }
   busy(false);
-  if (!made.length) return toast(lastErr ? aiErr(lastErr) : 'Jeg kunne ikke finde opskrifter på billederne');
+  if (!made.length) return lastErr ? showAiError(lastErr) : toast('Jeg kunne ikke finde opskrifter på billederne');
   openSheet(`<h3 class="sh">${plural(made.length, 'opskrift', 'opskrifter')} er gemt 🎉</h3>
     ${failed ? `<p class="muted" style="margin-top:-6px">${plural(failed, 'billede', 'billeder')} kunne ikke læses.</p>` : ''}
     <p class="muted">Tjek dem igennem – Gemini kan tage fejl. Tryk på en opskrift for at åbne den.</p>
@@ -1505,7 +1592,7 @@ function renderEdit(r, prefill = null, imgs = null){
     pickScan('form', b.dataset.scan === 'cam');
   });
   const bk = $('#bulk'); if (bk) bk.onclick = openBulkScan;
-  $('#cancel').onclick = () => leaveEdit(r ? '#/r/' + r.id : (prefill ? '#/r/' + prefill.id : '#/'));
+  $('#cancel').onclick = () => leaveEdit(r ? '#/r/' + r.id : (prefill ? '#/r/' + prefill.id : '#/'), true);
   $('#f').onsubmit = e => { e.preventDefault(); save(); };
   $('#f').addEventListener('input', markChanged);
   drawCats(); drawParts(); drawEditImgs();
@@ -1670,7 +1757,7 @@ async function save(){
     if (data.shareId) publishShare({ id: ref.id, ...data }, data.shareId).catch(() => {});
     clearDraft();
     editRoute = null; editBuiltFor = null;
-    location.replace('#/r/' + ref.id);
+    replaceRoute('#/r/' + ref.id);
     toast(navigator.onLine ? 'Gemt ✓' : 'Gemt – synkroniseres når du er online');
   } catch (e) {
     toast('Kunne ikke gemme: ' + e.message);
@@ -1680,6 +1767,12 @@ async function save(){
 
 /* ---------- start ---------- */
 const fb = initializeApp(firebaseConfig);
+if (RECAPTCHA_SITE_KEY) {
+  try {
+    const { initializeAppCheck, ReCaptchaV3Provider } = await import('https://www.gstatic.com/firebasejs/12.12.1/firebase-app-check.js');
+    initializeAppCheck(fb, { provider: new ReCaptchaV3Provider(RECAPTCHA_SITE_KEY), isTokenAutoRefreshEnabled: true });
+  } catch (e) { console.warn('App Check kunne ikke starte', e); }
+}
 auth = getAuth(fb);
 try {
   db = initializeFirestore(fb, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
@@ -1712,6 +1805,7 @@ onAuthStateChanged(auth, u => {
   render();
 });
 lastRoute = route();
+if (history.state && history.state.d) navDepth = history.state.d; else history.replaceState({ d: 1 }, '');
 render();
 </script>
 </body>
