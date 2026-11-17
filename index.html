@@ -84,6 +84,16 @@ main{max-width:calc(var(--maxw) + 32px);margin:0 auto;padding:8px max(16px,env(s
 .cat.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .cat.ghost{color:var(--muted)}
 .listhead{display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--muted);font-size:14px;margin:0 2px 10px}
+.lhr{display:flex;gap:14px;align-items:center}
+.cat.fav.on{background:#e2475a;border-color:#e2475a;color:#fff}
+.favbadge{position:absolute;right:8px;top:8px;background:rgba(255,255,255,.9);border-radius:999px;width:28px;height:28px;display:grid;place-items:center;font-size:14px}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.scanbox{background:linear-gradient(135deg,var(--accent-soft),var(--chip));border-radius:20px;padding:14px;margin:4px 0 6px}
+.scant{margin-bottom:10px;line-height:1.35}
+.scant b{display:block;font-size:16px;margin-bottom:2px}
+.scant small{color:var(--muted);font-size:13.5px}
+.scanbox .imgrow .btn{min-width:110px}
+.form textarea.big{min-height:220px}
 .linkbtn{background:none;border:0;color:var(--accent);font-weight:700;font-size:14px;cursor:pointer;padding:4px 0;white-space:nowrap}
 
 /* opskriftskort */
@@ -117,13 +127,14 @@ main{max-width:calc(var(--maxw) + 32px);margin:0 auto;padding:8px max(16px,env(s
 span.chip{cursor:default}
 
 /* opskrift */
-.hero{margin:0 -16px;height:min(34vh,380px);overflow:hidden;background:linear-gradient(135deg,var(--ph1),var(--ph2))}
+.hero{margin:14px 0 0;border-radius:20px;height:min(34vh,380px);overflow:hidden;background:linear-gradient(135deg,var(--ph1),var(--ph2))}
 .hero img{width:100%;height:100%;display:block;object-fit:cover;cursor:zoom-in}
-.dcard{position:relative}
-.dcard.over{margin:-30px -16px 0;padding:20px 16px 0;background:var(--bg);border-radius:26px 26px 0 0}
-.detail h2{font-size:30px;line-height:1.15;margin:6px 0 6px}
-.meta{color:var(--muted);font-size:15px;display:flex;gap:14px;flex-wrap:wrap}
-.tools{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+.titlerow{display:flex;align-items:flex-start;gap:10px}
+.detail h2{font-size:30px;line-height:1.15;margin:4px 0 6px;flex:1;min-width:0}
+.favbtn{flex:none;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--card);font-size:22px;cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow);margin-top:2px}
+.favbtn.on{background:#fde2e4;border-color:#f3a5ae}
+.meta{color:var(--muted);font-size:15px;display:flex;gap:14px;flex-wrap:wrap;margin-top:8px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 4px}
 .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:999px;
   padding:8px 14px;font-weight:700;font-size:14px;cursor:pointer;box-shadow:var(--shadow)}
 .pill.on{background:var(--gold);color:#2d2420;border-color:var(--gold)}
@@ -178,8 +189,7 @@ section>h3 small{font-family:var(--sans);font-size:13px;font-weight:600;color:va
 
 /* bred skærm / liggende: to kolonner */
 @media (min-width:760px){
-  .hero{margin:0;border-radius:24px;height:min(40vh,400px)}
-  .dcard.over{margin:0;padding:18px 0 0;border-radius:0;background:none}
+  .hero{margin:16px 0 0;border-radius:24px;height:min(42vh,420px)}
   .cols{display:grid;grid-template-columns:minmax(260px,2fr) 3fr;gap:36px;align-items:start}
   .cols.one{display:block}
 }
@@ -309,6 +319,7 @@ section>h3 small{font-family:var(--sans);font-size:13px;font-weight:600;color:va
 <button id="fab" aria-label="Ny opskrift" hidden><span>+</span>Ny opskrift</button>
 <input type="file" id="file" accept="image/*" hidden>
 <input type="file" id="impfile" accept=".json,application/json" hidden>
+<input type="file" id="scanfile" accept="image/*" multiple hidden>
 <div id="sheet" hidden><div class="bg"></div><div class="panel"><div class="grab"></div><div id="sheetbody"></div></div></div>
 <div id="lightbox" hidden><img alt=""><button class="close" aria-label="Luk">✕</button></div>
 <div id="busy" hidden>Gemmer…</div>
@@ -329,11 +340,11 @@ const firebaseConfig = {
 };
 /* ============================================================ */
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect,
-  getRedirectResult, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+  getRedirectResult, signOut } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, doc,
-  onSnapshot, setDoc, deleteDoc, getDoc, writeBatch } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+  onSnapshot, setDoc, deleteDoc, getDoc, writeBatch } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
 const $ = s => document.querySelector(s);
 const app = $('#app');
@@ -691,10 +702,32 @@ function authErr(e){
 }
 
 /* ---------- forside: kategorier + søgning ---------- */
+const FAV = '__fav';
+const SORTS = { az: 'A–Å', new: 'Senest tilføjet', upd: 'Senest rettet', open: 'Senest åbnet' };
+let sortBy = SORTS[lsGet('sort')] ? lsGet('sort') : 'az';
+function openedMap(){ try { return JSON.parse(lsGet('opened')) || {}; } catch (e) { return {}; } }
+function markOpened(id){ const o = openedMap(); o[id] = Date.now(); lsSet('opened', JSON.stringify(o)); }
+function sortList(res){
+  const o = sortBy === 'open' ? openedMap() : null;
+  const key = { new: r => r.createdAt || 0, upd: r => r.updatedAt || r.createdAt || 0, open: r => o[r.id] || 0 }[sortBy];
+  if (key) res.sort((a, b) => key(b.r) - key(a.r));   // listen er allerede A–Å, så lige stillede står alfabetisk
+  return res;
+}
+function openSortSheet(){
+  openSheet(`<h3 class="sh">Sortér opskrifter</h3>
+    <div class="opts">${Object.entries(SORTS).map(([k, v]) =>
+      `<button class="opt ${k === sortBy ? 'sel' : ''}" data-sort="${k}"><span class="oi">${{ az: '🔤', new: '🆕', upd: '✏️', open: '🕘' }[k]}</span>
+        <span style="flex:1"><b>${v}</b>${k === 'open' ? '<small>De opskrifter du sidst har kigget på</small>' : ''}</span>${k === sortBy ? '<span class="plus">✓</span>' : ''}</button>`).join('')}</div>`);
+  $('#sheetbody').querySelectorAll('[data-sort]').forEach(b => b.onclick = () => {
+    sortBy = b.dataset.sort; lsSet('sort', sortBy); closeSheet(); renderList();
+  });
+}
 function renderList(){
   const terms = norm(searchEl.value.trim()).split(/\s+/).filter(Boolean);
-  if (activeCat && categories.length && !categories.some(c => c.name === activeCat)) { activeCat = null; lsSet('activeCat', null); }
-  const pool = activeCat ? recipes.filter(r => (r.categories || []).includes(activeCat)) : recipes;
+  if (activeCat && activeCat !== FAV && categories.length && !categories.some(c => c.name === activeCat)) { activeCat = null; lsSet('activeCat', null); }
+  const pool = activeCat === FAV ? recipes.filter(r => r.fav)
+    : activeCat ? recipes.filter(r => (r.categories || []).includes(activeCat)) : recipes;
+  const catLabel = activeCat === FAV ? 'Favoritter' : activeCat;
   const res = [];
   for (const r of pool) {
     if (!terms.length) { res.push({ r }); continue; }
@@ -720,11 +753,13 @@ function renderList(){
     res.push({ r, score, hint });
   }
   if (terms.length) res.sort((a, b) => b.score - a.score);
+  else sortList(res);
 
   const banner = showBanner() ? `<div class="banner"><div class="bi">📲</div>
     <div class="bt"><b>Få appen på din telefon</b>Læg Mine opskrifter på hjemmeskærmen</div>
     <button class="btn sm" id="bInst">Tilføj</button><button class="bx" id="bX" aria-label="Luk">✕</button></div>` : '';
   const cats = `<div class="cats">
+    <button class="cat fav ${activeCat === FAV ? 'on' : ''}" data-c="${FAV}">❤️ Favoritter</button>
     <button class="cat ${!activeCat ? 'on' : ''}" data-c="">Alle</button>
     ${categories.map(c => `<button class="cat ${activeCat === c.name ? 'on' : ''}" data-c="${esc(c.name)}">${c.emoji} ${esc(c.name)}</button>`).join('')}
     <button class="cat ghost" id="editcats">✏️ Kategorier</button></div>`;
@@ -735,15 +770,19 @@ function renderList(){
       ? `<div class="empty"><div class="big">🧑‍🍳</div><h3>Din kogebog er tom</h3><p>Tryk på <b>Ny opskrift</b> for at tilføje din første.</p></div>`
       : '<p class="muted">Indlæser…</p>';
   } else if (!res.length) {
-    body = `<div class="empty"><div class="big">🔍</div><h3>Intet fundet</h3><p>${terms.length ? 'Ingen opskrifter matcher din søgning' : 'Der er ingen opskrifter i denne kategori endnu'}.</p></div>`;
+    body = activeCat === FAV && !terms.length
+      ? `<div class="empty"><div class="big">🤍</div><h3>Ingen favoritter endnu</h3><p>Tryk på hjertet ved en opskrift for at samle den her.</p></div>`
+      : `<div class="empty"><div class="big">🔍</div><h3>Intet fundet</h3><p>${terms.length ? 'Ingen opskrifter matcher din søgning' : 'Der er ingen opskrifter i denne kategori endnu'}.</p></div>`;
   } else {
-    body = `<div class="listhead"><span>${plural(res.length, 'opskrift', 'opskrifter')}${activeCat ? ' i ' + esc(activeCat) : ''}</span>
-        <button class="linkbtn" id="exp">⬇︎ Eksportér${activeCat ? ' kategori' : ''}</button></div>
+    body = `<div class="listhead"><span>${plural(res.length, 'opskrift', 'opskrifter')}${catLabel ? ' i ' + esc(catLabel) : ''}</span>
+        <span class="lhr">${terms.length ? '' : `<button class="linkbtn" id="sortbtn">↕︎ ${SORTS[sortBy]}</button>`}
+        <button class="linkbtn" id="exp">⬇︎ Eksportér</button></span></div>
       <div class="grid">${res.map(({ r, hint }) => {
         const meta = [r.time && '⏱ ' + esc(r.time), (r.categories || []).map(esc).join(', ')].filter(Boolean).join(' · ');
         return `<a class="rcard" href="#/r/${r.id}">
           <div class="rimg">${r.thumb ? `<img src="${r.thumb}" alt="" loading="lazy">` : catEmoji(r)}
-            ${(r.parts || []).length ? `<span class="badge">🔗 ${r.parts.length}</span>` : ''}</div>
+            ${(r.parts || []).length ? `<span class="badge">🔗 ${r.parts.length}</span>` : ''}
+            ${r.fav ? '<span class="favbadge">❤️</span>' : ''}</div>
           <div class="rbody">
             <div class="rt">${esc(r.title)}</div>
             ${meta ? `<div class="rm">${meta}</div>` : ''}
@@ -757,7 +796,8 @@ function renderList(){
     activeCat = b.dataset.c || null; lsSet('activeCat', activeCat); renderList();
   });
   $('#editcats').onclick = openSettings;
-  const ex = $('#exp'); if (ex) ex.onclick = () => openExportSheet(res.map(x => x.r), activeCat || (terms.length ? 'Søgeresultat' : 'Alle opskrifter'));
+  const ex = $('#exp'); if (ex) ex.onclick = () => openExportSheet(res.map(x => x.r), catLabel || (terms.length ? 'Søgeresultat' : 'Alle opskrifter'));
+  const sb = $('#sortbtn'); if (sb) sb.onclick = openSortSheet;
   const bi = $('#bInst'); if (bi) bi.onclick = install;
   const bx = $('#bX'); if (bx) bx.onclick = () => { lsSet('installDismissed', '1'); renderList(); };
 }
@@ -866,7 +906,7 @@ function ingListHtml(arr, pre, chk){
 const stepsHtml = arr => `<ol class="steps">${arr.map(s => `<li>${esc(s)}</li>`).join('')}</ol>`;
 function partHtml(p, pid, chk, href){
   const pl = lines(p.ingredients), ps = lines(p.steps);
-  const head = `${thumbHtml(p)}<span class="pt">${esc(p.title)}<small>${nIng(pl)} ingredienser${href ? ' · tryk for hele opskriften' : ''}</small></span>`;
+  const head = `${thumbHtml(p)}<span class="pt">${esc(p.title)}${href ? '<small>Tryk for hele opskriften</small>' : ''}</span>`;
   const showSteps = !href && ps.length;
   return `<div class="part">
     ${href ? `<a class="prow" href="${href}">${head}<span class="go">›</span></a>` : `<div class="prow" style="cursor:default">${head}</div>`}
@@ -881,7 +921,7 @@ function recipeHtml(r, o){
   const srcHtml = /^https?:\/\//i.test(src) ? `<a href="${esc(src)}" target="_blank" rel="noopener">${esc(src)}</a>` : esc(src);
   const colA = (o.parts.length ? `<section><h3>Består af <small>${plural(o.parts.length, 'opskrift', 'opskrifter')}</small></h3>
         ${o.parts.map(p => partHtml(p, p.id || p.key, o.chk, o.partHref ? o.partHref(p) : null)).join('')}</section>` : '')
-    + (ings.length ? `<section><h3>${o.parts.length ? 'Derudover' : 'Ingredienser'} <small>${nIng(ings)} stk.</small></h3>${ingListHtml(ings, 'm', o.chk)}</section>` : '');
+    + (ings.length ? `<section><h3>${o.parts.length ? 'Derudover' : 'Ingredienser'}</h3>${ingListHtml(ings, 'm', o.chk)}</section>` : '');
   const colB = (steps.length ? `<section><h3>Fremgangsmåde</h3>${stepsHtml(steps)}</section>` : '')
     + (r.notes ? `<section><h3>Noter</h3><div class="notes">${esc(r.notes)}</div></section>` : '')
     + (o.extraB || '')
@@ -890,18 +930,17 @@ function recipeHtml(r, o){
     ? `<button class="chip cat-c" data-cat="${esc(c)}">${(categories.find(x => x.name === c) || {}).emoji || ''} ${esc(c)}</button>`
     : `<span class="chip cat-c">${esc(c)}</span>`;
   const tagChip = t => o.own ? `<button class="chip" data-tag="${esc(t)}">#${esc(t)}</button>` : `<span class="chip">#${esc(t)}</span>`;
+  const meta = [r.servings && '🍽 ' + esc(r.servings), r.time && '⏱ ' + esc(r.time)].filter(Boolean);
   return `<article class="detail">
     ${o.top || ''}
-    <div class="tools">${o.tools}</div>
+    <div class="titlerow"><h2>${esc(r.title)}</h2>${o.fav ? o.fav : ''}</div>
+    ${(r.categories || []).length ? `<div class="chips" style="margin:2px 0 0">${r.categories.map(catChip).join('')}</div>` : ''}
+    ${meta.length ? `<div class="meta">${meta.map(x => `<span>${x}</span>`).join('')}</div>` : ''}
+    ${(r.tags || []).length ? `<div class="chips">${r.tags.map(tagChip).join('')}</div>` : ''}
     ${o.hero ? `<div class="hero"><img id="hero" src="${o.hero}" alt=""></div>` : ''}
-    <div class="dcard ${o.hero ? 'over' : ''}">
-      ${(r.categories || []).length ? `<div class="chips" style="margin:0">${r.categories.map(catChip).join('')}</div>` : ''}
-      <h2>${esc(r.title)}</h2>
-      <div class="meta">${[r.servings && '🍽 ' + esc(r.servings), r.time && '⏱ ' + esc(r.time)].filter(Boolean).map(x => `<span>${x}</span>`).join('')}</div>
-      ${(r.tags || []).length ? `<div class="chips">${r.tags.map(tagChip).join('')}</div>` : ''}
-      <div class="cols ${colA ? '' : 'one'}"><div class="col-a">${colA}</div><div class="col-b">${colB}</div></div>
-      ${o.bottom || ''}
-    </div>
+    <div class="tools">${o.tools}</div>
+    <div class="cols ${colA ? '' : 'one'}"><div class="col-a">${colA}</div><div class="col-b">${colB}</div></div>
+    ${o.bottom || ''}
   </article>`;
 }
 function bindRecipeCommon(ckey){
@@ -921,8 +960,10 @@ function renderDetail(r){
   const extraB = (origs.length ? `<section><h3>Original opskrift</h3><div class="origs">${origs.map(id =>
         `<button class="og" data-id="${id}"><img data-img="${id}" alt="Original opskrift"></button>`).join('')}</div></section>` : '')
     + (usedIn.length ? `<section><h3>Bruges i</h3><div class="chips" style="margin:0">${usedIn.map(u => `<a class="chip" href="#/r/${u.id}">🔗 ${esc(u.title)}</a>`).join('')}</div></section>` : '');
+  markOpened(r.id);
   app.innerHTML = recipeHtml(r, {
     own: true, parts, chk: checked.get(r.id) || new Set(), partHref: p => '#/r/' + p.id, extraB,
+    fav: `<button class="favbtn ${r.fav ? 'on' : ''}" id="fav" aria-label="${r.fav ? 'Fjern fra favoritter' : 'Gør til favorit'}" title="${r.fav ? 'Fjern fra favoritter' : 'Gør til favorit'}">${r.fav ? '❤️' : '🤍'}</button>`,
     hero: r.dishId ? (imgCache.get(r.dishId) || r.thumb || 'data:image/gif;base64,R0lGODlhAQABAAAAACw=') : null,
     tools: wakePill()
       + `<button class="pill" id="share">↗︎ Del / eksportér</button>`
@@ -938,6 +979,14 @@ function renderDetail(r){
   $('#edit').onclick = $('#edit2').onclick = () => { location.hash = '#/edit/' + r.id; };
   $('#copy').onclick = () => { location.hash = '#/copy/' + r.id; };
   $('#del').onclick = () => deleteRecipe(r, usedIn);
+  $('#fav').onclick = async () => {
+    const on = !r.fav;
+    r.fav = on;
+    const b = $('#fav'); b.classList.toggle('on', on); b.textContent = on ? '❤️' : '🤍';
+    toast(on ? 'Tilføjet til favoritter ❤️' : 'Fjernet fra favoritter');
+    try { await w(setDoc(doc(recCol(), r.id), { fav: on }, { merge: true })); }
+    catch (e) { toast('Fejl: ' + e.message); }
+  };
   app.querySelectorAll('[data-tag]').forEach(b => b.onclick = () => { searchEl.value = b.dataset.tag; activeCat = null; lsSet('activeCat', null); listScroll = 0; location.hash = '#/'; });
   app.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { searchEl.value = ''; activeCat = b.dataset.cat; lsSet('activeCat', activeCat); listScroll = 0; location.hash = '#/'; });
   if (r.dishId) {
@@ -1177,6 +1226,147 @@ $('#impfile').addEventListener('change', async () => {
   busy(false);
 });
 
+/* ---------- scan opskrift med Gemini (Firebase AI Logic) ---------- */
+const AI_MODEL = 'gemini-3.8-flash';
+let aiModel = null;
+async function getModel(){
+  if (aiModel) return aiModel;
+  const { getAI, getGenerativeModel, GoogleAIBackend } = await import('https://www.gstatic.com/firebasejs/12.12.1/firebase-ai.js');
+  const ai = getAI(fb, { backend: new GoogleAIBackend() });
+  aiModel = getGenerativeModel(ai, { model: AI_MODEL, generationConfig: { responseMimeType: 'application/json', temperature: 0.1 } });
+  return aiModel;
+}
+function scanPrompt(){
+  return `Du er hjælper i en dansk opskrifts-app. Du får billeder (fx fotos af en kogebog, et opskriftskort, håndskrift eller et skærmbillede) eller tekst med en eller flere opskrifter.
+Udtræk hver opskrift præcist, som den står. Opfind ikke ingredienser, mængder eller trin. Ret kun åbenlyse stavefejl.
+Svar KUN med JSON i dette format:
+{"recipes":[{"title":"","servings":"","time":"","ingredients":[""],"steps":[""],"notes":"","categories":[""],"tags":[""]}]}
+Regler:
+- ingredients: én ingrediens pr. element med mængde og enhed, fx "500 g hvedemel". Har opskriften delafsnit (fx Dej, Fyld, Glasur), så indsæt afsnittets navn som eget element, der slutter med kolon, fx "Fyld:".
+- steps: ét trin pr. element, uden nummerering foran.
+- servings fx "4 pers." eller "20 stk.", time fx "45 min" – tom streng hvis det ikke står der.
+- notes: tips eller bemærkninger fra opskriften, ellers tom streng.
+- categories: 0-2 der passer bedst, og KUN fra denne liste: ${JSON.stringify(categories.map(c => c.name))}.
+- tags: 0-3 korte ord med små bogstaver.
+- Behold opskriftens eget sprog.
+- Hører flere billeder til samme opskrift (fx side 1 og side 2), så saml dem til én opskrift.
+- Står der flere forskellige opskrifter, så returnér dem hver for sig. Er der ingen opskrift, så returnér {"recipes":[]}.`;
+}
+async function aiExtract({ images = [], text = '' }){
+  const model = await getModel();
+  const parts = [{ text: scanPrompt() }];
+  for (const d of images) parts.push({ inlineData: { mimeType: 'image/jpeg', data: d.split(',')[1] } });
+  if (text) parts.push({ text: 'Opskriftstekst:\n' + text });
+  const res = await model.generateContent(parts);
+  const raw = res.response.text().trim().replace(/^```(?:json)?\s*/i, '').replace(/```$/, '');
+  const json = JSON.parse(raw);
+  const list = Array.isArray(json) ? json : (json.recipes || []);
+  const str = v => v == null ? '' : String(v).trim();
+  const arr = v => (Array.isArray(v) ? v : str(v).split('\n')).map(str).filter(Boolean);
+  return list.map(x => ({
+    title: str(x.title), servings: str(x.servings), time: str(x.time), notes: str(x.notes),
+    ingredients: arr(x.ingredients).join('\n'),
+    steps: arr(x.steps).map(l => l.replace(/^\d+[.)]\s*/, '')).join('\n'),
+    categories: arr(x.categories).map(n => (categories.find(c => norm(c.name) === norm(n)) || {}).name).filter(Boolean),
+    tags: arr(x.tags).map(t => t.toLocaleLowerCase('da').replace(/^#/, ''))
+  })).filter(x => x.title || x.ingredients || x.steps);
+}
+function aiErr(e){
+  const m = String((e && (e.code || '')) + ' ' + (e && e.message || e));
+  if (/api[-_ ]?not[-_ ]?enabled|firebasevertexai|firebaseml|SERVICE_DISABLED|has not been used|PERMISSION_DENIED|403/i.test(m))
+    return 'Scanning er ikke slået til endnu – slå Firebase AI Logic til i Firebase-konsollen';
+  if (/quota|429|RESOURCE_EXHAUSTED/i.test(m)) return 'Dagens gratis forbrug er brugt op – prøv igen senere';
+  if (/fetch|network|Failed to load|import/i.test(m) && !navigator.onLine) return 'Scanning kræver internet';
+  if (e instanceof SyntaxError) return 'Gemini svarede uklart – prøv et skarpere billede';
+  return 'Kunne ikke læse opskriften: ' + (e?.message || e);
+}
+let scanTarget = 'form';
+function pickScan(target, camera){
+  const i = $('#scanfile');
+  i.value = '';
+  camera ? i.setAttribute('capture', 'environment') : i.removeAttribute('capture');
+  i.multiple = !camera;
+  scanTarget = target;
+  i.click();
+}
+$('#scanfile').addEventListener('change', async () => {
+  const files = [...$('#scanfile').files];
+  if (!files.length) return;
+  if (scanTarget === 'bulk') return bulkScan(files);
+  if (!ed) return;
+  busy(true, 'Gør billederne klar…');
+  try {
+    const imgs = [];
+    for (const f of files) imgs.push(await compress(f, 2200));
+    busy(true, '✨ Gemini læser opskriften…');
+    const found = await aiExtract({ images: imgs });
+    busy(false);
+    if (!found.length) return toast('Jeg kunne ikke finde en opskrift på billedet – prøv et skarpere foto');
+    applyScan(found[0], imgs, found.length);
+  } catch (e) { busy(false); toast(aiErr(e)); }
+});
+function applyScan(x, imgs, total){
+  const f = formFields();
+  const typed = f && (f.t.trim() || f.i.trim() || f.s.trim());
+  if (typed && !confirm('Vil du erstatte det, du allerede har skrevet, med den scannede opskrift?')) return;
+  $('#ft').value = x.title; $('#fi').value = x.ingredients; $('#fs').value = x.steps;
+  $('#fp').value = x.servings; $('#fz').value = x.time; $('#fn').value = x.notes;
+  $('#fg').value = x.tags.join(', ');
+  if (x.categories.length) ed.cats = x.categories;
+  for (const d of imgs) ed.originals.push({ data: d });
+  drawCats(); drawEditImgs(); markChanged();
+  $('#ft').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  toast(total > 1 ? `Fandt ${total} opskrifter – den første er udfyldt. Brug “Scan mange” for at få dem alle.` : 'Udfyldt ✓ Tjek den igennem og tryk Gem');
+}
+function openTextScan(){
+  openSheet(`<h3 class="sh">Indsæt opskriften som tekst</h3>
+    <p class="muted" style="margin-top:-6px">Kopiér fx fra en hjemmeside, en mail eller en besked – så sætter Gemini den pænt op.</p>
+    <div class="form"><textarea id="scantext" class="big" placeholder="Indsæt opskriften her…"></textarea></div>
+    <button class="btn primary" style="width:100%;margin-top:10px" id="scango">✨ Udfyld opskriften</button>`);
+  $('#scango').onclick = async () => {
+    const t = $('#scantext').value.trim();
+    if (!t) return toast('Indsæt først noget tekst');
+    closeSheet(); busy(true, '✨ Gemini læser opskriften…');
+    try {
+      const found = await aiExtract({ text: t });
+      busy(false);
+      if (!found.length) return toast('Jeg kunne ikke finde en opskrift i teksten');
+      applyScan(found[0], [], found.length);
+    } catch (e) { busy(false); toast(aiErr(e)); }
+  };
+}
+function openBulkScan(){
+  openSheet(`<h3 class="sh">Scan mange opskrifter</h3>
+    <p>Vælg alle billederne på én gang. Hvert billede læses for sig, og opskrifterne gemmes direkte med originalbilledet og tagget <b>#scannet</b>, så du let kan finde og tjekke dem bagefter.</p>
+    <p class="muted">Tip: Én opskrift pr. billede giver det bedste resultat.</p>
+    <button class="btn primary" style="width:100%" id="bulkgo">🖼️ Vælg billeder</button>`);
+  $('#bulkgo').onclick = () => { closeSheet(); pickScan('bulk', false); };
+}
+async function bulkScan(files){
+  const made = []; let failed = 0, lastErr = null;
+  for (let i = 0; i < files.length; i++) {
+    busy(true, `✨ Læser billede ${i + 1} af ${files.length}…`);
+    try {
+      const img = await compress(files[i], 2200);
+      const found = await aiExtract({ images: [img] });
+      if (!found.length) { failed++; continue; }
+      const bundle = { app: 'mine-opskrifter', v: 1, main: [], categories: [], recipes: found.map((x, k) => ({
+        key: 'scan' + i + '_' + k, ...x, tags: [...new Set([...x.tags, 'scannet'])], parts: [], source: '', thumb: null, dish: null, originals: [img] })) };
+      const res = await importBundle(bundle);
+      found.forEach((x, k) => made.push({ id: res.map['scan' + i + '_' + k], title: x.title || 'Uden navn' }));
+    } catch (e) {
+      failed++; lastErr = e;
+      if (/ikke slået til|forbrug|internet/.test(aiErr(e))) break;   // nytter ikke at prøve de næste
+    }
+  }
+  busy(false);
+  if (!made.length) return toast(lastErr ? aiErr(lastErr) : 'Jeg kunne ikke finde opskrifter på billederne');
+  openSheet(`<h3 class="sh">${plural(made.length, 'opskrift', 'opskrifter')} er gemt 🎉</h3>
+    ${failed ? `<p class="muted" style="margin-top:-6px">${plural(failed, 'billede', 'billeder')} kunne ikke læses.</p>` : ''}
+    <p class="muted">Tjek dem igennem – Gemini kan tage fejl. Tryk på en opskrift for at åbne den.</p>
+    <div class="plist">${made.map(m => { const r = find(m.id) || { title: m.title }; return `<a class="prow" href="#/r/${m.id}">${thumbHtml(r)}<span class="pt">${esc(m.title)}</span><span class="go">›</span></a>`; }).join('')}</div>`);
+}
+
 /* ---------- delt opskrift (åbnet fra et link) ---------- */
 const waitLoaded = () => new Promise(res => { const t0 = Date.now(); const tick = () => (user && loaded) || Date.now() - t0 > 8000 ? res() : setTimeout(tick, 100); tick(); });
 async function renderShared(id){
@@ -1245,8 +1435,17 @@ function renderEdit(r, prefill = null, imgs = null){
     parts: (src.parts || []).filter(id => find(id)),
     cats: [...(src.categories || [])]
   };
-  if (!r && !prefill && activeCat) ed.cats = [activeCat];
+  if (!r && !prefill && activeCat && activeCat !== FAV) ed.cats = [activeCat];
   app.innerHTML = `<form id="f" class="form" autocomplete="off">
+    ${!r && !prefill ? `<div class="scanbox">
+      <div class="scant"><b>✨ Lad Gemini udfylde opskriften</b><small>Tag et billede af en opskrift – fra en bog, et kort, en seddel eller en skærm. Du tjekker den igennem, før du gemmer.</small></div>
+      <div class="imgrow">
+        <button type="button" class="btn primary" data-scan="cam">📷 Tag billede</button>
+        <button type="button" class="btn" data-scan="pick">🖼️ Vælg billeder</button>
+        <button type="button" class="btn" data-scan="text">📋 Indsæt tekst</button>
+      </div>
+      <button type="button" class="linkbtn" id="bulk" style="margin-top:10px">📚 Scan mange opskrifter på én gang</button>
+    </div>` : ''}
     <label for="ft" style="margin-top:4px">Titel</label>
     <input type="text" id="ft" required placeholder="Fx Kaffebrød" enterkeyhint="next">
 
@@ -1301,6 +1500,11 @@ function renderEdit(r, prefill = null, imgs = null){
   fill({ t: src.title, i: src.ingredients, s: src.steps, p: src.servings, z: src.time, g: (src.tags || []).join(', '), q: src.source, n: src.notes });
   app.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => pick(b.dataset.pick, !!b.dataset.cam));
   $('#addpart').onclick = openPartPicker;
+  app.querySelectorAll('[data-scan]').forEach(b => b.onclick = () => {
+    if (b.dataset.scan === 'text') return openTextScan();
+    pickScan('form', b.dataset.scan === 'cam');
+  });
+  const bk = $('#bulk'); if (bk) bk.onclick = openBulkScan;
   $('#cancel').onclick = () => leaveEdit(r ? '#/r/' + r.id : (prefill ? '#/r/' + prefill.id : '#/'));
   $('#f').onsubmit = e => { e.preventDefault(); save(); };
   $('#f').addEventListener('input', markChanged);
@@ -1348,7 +1552,7 @@ function drawCats(){
 function drawParts(){
   const box = $('#partsbox'); if (!box || !ed) return;
   box.innerHTML = ed.parts.map(find).filter(Boolean).map(p =>
-    `<div class="prow">${thumbHtml(p)}<span class="pt">${esc(p.title)}<small>${nIng(lines(p.ingredients))} ingredienser</small></span>
+    `<div class="prow">${thumbHtml(p)}<span class="pt">${esc(p.title)}<small>${esc((p.categories || []).join(', '))}</small></span>
      <button type="button" class="x" data-rmp="${p.id}" aria-label="Fjern">✕</button></div>`).join('');
   box.querySelectorAll('[data-rmp]').forEach(b => b.onclick = () => { ed.parts = ed.parts.filter(x => x !== b.dataset.rmp); drawParts(); markChanged(); });
 }
@@ -1456,6 +1660,7 @@ async function save(){
       notes: $('#fn').value.trim(),
       dishId, originalIds, thumb,
       shareId: r?.shareId || null,
+      fav: r?.fav || false,
       createdAt: r?.createdAt || Date.now(),
       updatedAt: Date.now()
     };
